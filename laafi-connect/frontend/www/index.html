@@ -1078,15 +1078,20 @@ select#trendSelect{font-size:11px;padding:5px 8px;border-radius:8px}
 /* THEME */
 function toggleTheme(){
   const isLight=document.body.getAttribute('data-theme')==='light';
-  if(isLight){document.body.removeAttribute('data-theme');localStorage.setItem('cc_theme','dark');}
-  else{document.body.setAttribute('data-theme','light');localStorage.setItem('cc_theme','light');}
+  if(isLight){document.body.removeAttribute('data-theme');_safeLS.setItem('cc_theme','dark');}
+  else{document.body.setAttribute('data-theme','light');_safeLS.setItem('cc_theme','light');}
 }
-(function(){const t=localStorage.getItem('cc_theme');if(t==='light')document.body.setAttribute('data-theme','light');})();
+(function(){try{const t=localStorage.getItem('cc_theme');if(t==='light')document.body.setAttribute('data-theme','light');}catch(e){}})();
 
-/* LS */
+/* LS — résistant au Tracking Prevention (Edge/Safari) */
+const _memStore = {};
+const _safeLS = (() => {
+  try { localStorage.setItem('__lc_test__','1'); localStorage.removeItem('__lc_test__'); return localStorage; }
+  catch(e) { return { getItem: k => _memStore[k]??null, setItem: (k,v) => { _memStore[k]=v; }, removeItem: k => { delete _memStore[k]; } }; }
+})();
 const LS={
-  get:k=>{try{return JSON.parse(localStorage.getItem('cc_'+k));}catch(e){return null;}},
-  set:(k,v)=>localStorage.setItem('cc_'+k,JSON.stringify(v)),
+  get:k=>{try{return JSON.parse(_safeLS.getItem('cc_'+k));}catch(e){return null;}},
+  set:(k,v)=>_safeLS.setItem('cc_'+k,JSON.stringify(v)),
 };
 
 const DEFAULT_PROFILE={name:'Mon Profil',path:'diabete',blood:'A+',allergies:'',dob:'',avatar:'M',age:'',sexe:'',stade:''};
@@ -1939,7 +1944,7 @@ function saveWeeklyUpdate(){
 function resetCoaching(){
   if(!confirm('Réinitialiser le coaching ?'))return;
   coachProfile=null;coachSubjects=[];coachExams=[];
-  ['coachProfile','coachSubjects','coachExams'].forEach(k=>localStorage.removeItem('cc_'+k));
+  ['coachProfile','coachSubjects','coachExams'].forEach(k=>_safeLS.removeItem('cc_'+k));
   document.getElementById('coaching-setup').style.display='flex';
   document.getElementById('coaching-dashboard').style.display='none';
   document.getElementById('setup-step-0').classList.add('active');
@@ -1967,8 +1972,8 @@ function resetCoaching(){
 ═══════════════════════════════════════════════════════════════ */
 const API = (() => {
   const BASE = (window.LAAFI_CONFIG && window.LAAFI_CONFIG.API_BASE_URL) || 'http://127.0.0.1:8000/api/v1';
-  let _token   = localStorage.getItem('cc_access_token')  || null;
-  let _refresh = localStorage.getItem('cc_refresh_token') || null;
+  let _token   = _safeLS.getItem('cc_access_token')  || null;
+  let _refresh = _safeLS.getItem('cc_refresh_token') || null;
   let _online  = false;
 
   async function _fetch(path, opts = {}, retry = true) {
@@ -1993,7 +1998,7 @@ const API = (() => {
       if (!res.ok) return false;
       const d = await res.json();
       _token = d.access_token;
-      localStorage.setItem('cc_access_token', _token);
+      _safeLS.setItem('cc_access_token', _token);
       return true;
     } catch(_) { return false; }
   }
@@ -2006,15 +2011,15 @@ const API = (() => {
 
   function _clearSession() {
     _token = _refresh = null;
-    ['cc_access_token','cc_refresh_token','cc_user_id'].forEach(k => localStorage.removeItem(k));
+    ['cc_access_token','cc_refresh_token','cc_user_id'].forEach(k => _safeLS.removeItem(k));
   }
 
   function _saveSession(d) {
     _token   = d.access_token;
     _refresh = d.refresh_token;
-    localStorage.setItem('cc_access_token',  _token);
-    localStorage.setItem('cc_refresh_token', _refresh);
-    localStorage.setItem('cc_user_id', String(d.user_id));
+    _safeLS.setItem('cc_access_token',  _token);
+    _safeLS.setItem('cc_refresh_token', _refresh);
+    _safeLS.setItem('cc_user_id', String(d.user_id));
     _online = true;
   }
 
