@@ -21,19 +21,15 @@ async def register(body: RegisterIn):
     except supabase_client.SupabaseAuthError as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
     if not session.get("access_token"):
-        # Supabase requires email confirmation before issuing a session
+        # Supabase requires email confirmation before issuing a session.
+        # Use a non-2xx status so the frontend doesn't mistake this for a
+        # successful login and try to save a session that doesn't exist.
         raise HTTPException(
-            status_code=200,
+            status_code=202,
             detail="Compte créé. Vérifiez votre email pour confirmer votre inscription avant de vous connecter.",
         )
-    # create an empty profile row for this user (best effort)
     try:
-        await supabase_client.rest(
-            "POST", "profiles",
-            access_token=session["access_token"],
-            json={"id": session["user"]["id"], "full_name": body.full_name},
-            prefer="return=minimal",
-        )
+        await supabase_client.ensure_profile(session["access_token"], session["user"]["id"], body.full_name)
     except Exception:
         pass
     return _to_auth_out(session)
@@ -45,6 +41,10 @@ async def login(body: LoginIn):
         session = await supabase_client.sign_in(body.email, body.password)
     except supabase_client.SupabaseAuthError as e:
         raise HTTPException(status_code=e.status_code, detail=e.detail)
+    try:
+        await supabase_client.ensure_profile(session["access_token"], session["user"]["id"], None)
+    except Exception:
+        pass
     return _to_auth_out(session)
 
 
