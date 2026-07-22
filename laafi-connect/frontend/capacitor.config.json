@@ -1,0 +1,18 @@
+{
+  "appId": "bf.laafi.connect",
+  "appName": "Laafi-Connect",
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "android": {
+    "allowMixedContent": false
+  },
+  "plugins": {
+    "LocalNotifications": {
+      "smallIcon": "ic_stat_laafi",
+      "iconColor": "#3E7C5A"
+    },
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  }
+}

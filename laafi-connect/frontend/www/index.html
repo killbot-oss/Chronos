@@ -1,0 +1,2417 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Laafi-Connect</title>
+<link rel="manifest" href="manifest.json"/>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css"/>
+<script src="js/config.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+  --teal:#4FA179;--teal2:#3E7C5A;--teal-dim:rgba(79,161,121,.16);--teal-glow:rgba(79,161,121,.35);
+  --red:#FF4D6D;--red2:#C42848;--red-dim:rgba(255,77,109,.15);--red-glow:rgba(255,77,109,.4);
+  --amber:#FFB830;--amber2:#D68D00;--amber-dim:rgba(255,184,48,.15);
+  --purple:#A855F7;--purple2:#7A2ECC;--purple-dim:rgba(168,85,247,.15);
+  --blue:#3B9EFF;--blue2:#1568D6;--blue-dim:rgba(59,158,255,.15);
+  --green:#22C55E;--green2:#158B3F;--green-dim:rgba(34,197,94,.15);
+  --bg:#080C10;--bg2:#0E1419;--bg3:#141C24;
+  --imperial-green:#0B6E4F;--imperial-green2:#094F39;--laafi-gold:#F2B705;
+  --glass:rgba(255,255,255,.04);--glass2:rgba(255,255,255,.07);--glass3:rgba(255,255,255,.11);
+  --brd:rgba(255,255,255,.08);--brd2:rgba(255,255,255,.14);
+  --txt:#F0F4F8;--txt2:#7A8A9A;--txt3:#4A5A6A;
+  --shadow:0 8px 32px rgba(0,0,0,.6);
+  --font-head:'Syne',sans-serif;--font-body:'DM Sans',sans-serif;
+}
+[data-theme="light"]{
+  --bg:#EFF4F9;--bg2:#E3EBF3;--bg3:#D8E3EE;
+  --glass:rgba(255,255,255,.55);--glass2:rgba(255,255,255,.7);--glass3:rgba(255,255,255,.85);
+  --brd:rgba(0,0,0,.08);--brd2:rgba(0,0,0,.14);
+  --txt:#0F1923;--txt2:#4A6070;--txt3:#8A9EAC;
+  --shadow:0 8px 32px rgba(0,50,80,.12);
+  --teal-dim:rgba(62,124,90,.12);--teal-glow:rgba(62,124,90,.25);
+}
+html,body{height:100%;font-family:var(--font-body);background:var(--bg);color:var(--txt)}
+body{display:flex;flex-direction:column;max-width:480px;margin:0 auto;height:100dvh;overflow:hidden;box-shadow:0 0 80px rgba(79,161,121,.08),0 0 0 1px var(--brd);position:relative;transition:background .4s,color .4s}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(79,161,121,.07) 0%,transparent 70%),radial-gradient(ellipse 50% 50% at 85% 80%,rgba(168,85,247,.06) 0%,transparent 70%),radial-gradient(ellipse 40% 30% at 60% 50%,rgba(59,158,255,.04) 0%,transparent 70%);animation:bgPulse 12s ease-in-out infinite alternate}
+[data-theme="light"] body::before{background:radial-gradient(ellipse 60% 40% at 20% 10%,rgba(62,124,90,.08) 0%,transparent 70%),radial-gradient(ellipse 50% 50% at 85% 80%,rgba(168,85,247,.06) 0%,transparent 70%)}
+@keyframes bgPulse{0%{opacity:.7}50%{opacity:1}100%{opacity:.6}}
+
+/* TOPBAR */
+.topbar{position:relative;z-index:10;flex-shrink:0;padding:52px 20px 16px;background:linear-gradient(135deg,#3E7C5A 0%,#356B4C 100%);backdrop-filter:blur(20px) saturate(1.4);-webkit-backdrop-filter:blur(20px) saturate(1.4);border-bottom:1px solid rgba(255,255,255,.12);display:flex;align-items:center;justify-content:space-between}
+.topbar .topbar-name{color:#fff}
+.topbar .topbar-sub{color:rgba(255,255,255,.78)}
+.topbar .score-pill{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.25)}
+.topbar .score-val{color:#fff}
+.topbar .score-lbl{color:rgba(255,255,255,.75)}
+.topbar .theme-btn{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.85)}
+.topbar .theme-btn:hover{background:rgba(255,255,255,.25);color:#fff}
+.logout-btn{width:38px;height:38px;border-radius:12px;background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;cursor:pointer;color:rgba(255,255,255,.85);font-size:15px;transition:all .2s;margin-left:8px}
+.logout-btn:hover{background:rgba(255,77,109,.35);color:#fff}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(150deg,var(--teal),var(--teal2));display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:16px;font-weight:700;color:#fff;box-shadow:0 4px 14px rgba(0,0,0,.25),inset 0 1.5px 2px rgba(255,255,255,.3);flex-shrink:0}
+.topbar-name{font-family:var(--font-head);font-size:16px;font-weight:700;color:var(--txt);line-height:1.2}
+.topbar-sub{font-size:11px;color:var(--txt2);margin-top:2px}
+.score-pill{background:var(--glass2);border:1px solid var(--brd2);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-radius:14px;padding:6px 12px;display:flex;align-items:center;gap:6px;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.score-pill:hover{transform:scale(1.05);box-shadow:0 0 16px var(--teal-glow)}
+.score-val{font-family:var(--font-head);color:var(--teal);font-size:14px;font-weight:700}
+.score-lbl{color:var(--txt2);font-size:10px}
+.theme-btn{width:38px;height:38px;border-radius:12px;background:var(--glass2);border:1px solid var(--brd);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--txt2);font-size:16px;transition:all .2s;margin-left:8px}
+.theme-btn:hover{background:var(--glass3);color:var(--teal)}
+
+/* LAYOUT */
+.content{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;z-index:1;scroll-behavior:smooth}
+.content::-webkit-scrollbar{width:3px}
+.content::-webkit-scrollbar-thumb{background:var(--teal-dim);border-radius:10px}
+.tab-content{display:none;padding:16px;flex-direction:column;gap:14px;animation:tabIn .35s cubic-bezier(.4,0,.2,1)}
+.tab-content.active{display:flex}
+@keyframes tabIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+/* BOTTOM NAV */
+.bottomnav{position:relative;z-index:10;background:var(--glass2);backdrop-filter:blur(24px) saturate(1.5);-webkit-backdrop-filter:blur(24px) saturate(1.5);border-top:1px solid var(--brd2);display:flex;flex-shrink:0;padding-bottom:env(safe-area-inset-bottom,0)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:11px 2px 9px;cursor:pointer;border:none;background:none;color:var(--txt3);font-size:10px;font-family:var(--font-body);gap:4px;position:relative;transition:color .2s}
+.nav-item i{font-size:22px;line-height:1;transition:transform .3s cubic-bezier(.34,1.56,.64,1)}
+.nav-item.active{color:var(--teal)}
+.nav-item.active i{transform:scale(1.15)}
+.nav-item.active::after{content:'';position:absolute;top:0;left:20%;width:60%;height:2px;background:linear-gradient(90deg,transparent,var(--teal),transparent);border-radius:0 0 4px 4px;box-shadow:0 0 8px var(--teal)}
+.nav-item:active i{transform:scale(.88)}
+
+/* GLASS CARD */
+.card{background:var(--glass);backdrop-filter:blur(16px) saturate(1.3);-webkit-backdrop-filter:blur(16px) saturate(1.3);border:1px solid var(--brd);border-radius:18px;padding:16px 18px;transition:border-color .3s,box-shadow .3s}
+.card:hover{border-color:var(--brd2)}
+
+/* SECTION LABEL */
+.section-label{font-family:var(--font-head);font-size:11.5px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px;display:flex;align-items:center;gap:6px}
+.section-label::after{content:'';flex:1;height:1px;background:linear-gradient(90deg,var(--teal-dim),transparent)}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:10px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.3px}
+.badge-ok{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(79,161,121,.2)}
+.badge-warn{background:var(--amber-dim);color:var(--amber);border:1px solid rgba(255,184,48,.2)}
+.badge-crit{background:var(--red-dim);color:var(--red);border:1px solid rgba(255,77,109,.2)}
+.badge-blue{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,158,255,.2)}
+.badge-purple{background:var(--purple-dim);color:var(--purple);border:1px solid rgba(168,85,247,.2)}
+
+/* BUTTONS */
+.btn-primary{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#0A0F14;border:none;border-radius:14px;padding:14px 16px;font-size:14px;font-family:var(--font-head);font-weight:700;cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:8px;box-shadow:0 4px 24px var(--teal-glow);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 32px var(--teal-glow)}
+.btn-primary:active{transform:scale(.97)}
+.btn-secondary{background:var(--glass2);color:var(--txt);border:1px solid var(--brd2);border-radius:12px;padding:11px 16px;font-size:13px;font-family:var(--font-body);cursor:pointer;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;transition:all .2s}
+.btn-secondary:hover{background:var(--glass3);border-color:var(--teal);color:var(--teal)}
+.btn-icon{width:38px;height:38px;border-radius:11px;border:1px solid var(--brd);background:var(--glass2);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;color:var(--txt2);transition:all .2s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+.btn-icon:hover{background:var(--teal-dim);border-color:var(--teal);color:var(--teal);transform:scale(1.1);box-shadow:0 0 12px var(--teal-glow)}
+.btn-icon:active{transform:scale(.92)}
+
+/* FORM INPUTS */
+select,input[type=number],input[type=text],input[type=date],input[type=time]{width:100%;border:1px solid var(--brd2);border-radius:10px;padding:12px 14px;font-size:14.5px;font-family:var(--font-body);background:var(--glass2);color:var(--txt);outline:none;backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:border-color .2s,box-shadow .2s;color-scheme:dark}
+select:focus,input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-dim)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.field label{font-size:12.5px;color:var(--txt2);display:block;margin-bottom:6px;font-weight:500}
+[data-theme="light"] select,[data-theme="light"] input{color-scheme:light}
+option{background:var(--bg2);color:var(--txt);font-size:14.5px;padding:8px}
+[data-theme="light"] option{background:#fff;color:var(--txt)}
+
+/* VITAL CARDS */
+.vital-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vital-card{background:var(--glass);border:1px solid var(--brd);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:3px;cursor:pointer;position:relative;overflow:hidden;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.vital-card::before{content:'';position:absolute;top:0;left:0;width:3px;height:100%;border-radius:3px 0 0 3px;transition:opacity .3s}
+.vital-card.ok::before{background:linear-gradient(180deg,var(--teal),transparent)}
+.vital-card.warn::before{background:linear-gradient(180deg,var(--amber),transparent)}
+.vital-card.crit::before{background:linear-gradient(180deg,var(--red),transparent)}
+.vital-card::after{content:'';position:absolute;inset:0;border-radius:16px;background:radial-gradient(ellipse at top left,var(--teal-dim),transparent 70%);opacity:0;transition:opacity .3s}
+.vital-card.warn::after{background:radial-gradient(ellipse at top left,var(--amber-dim),transparent 70%)}
+.vital-card.crit::after{background:radial-gradient(ellipse at top left,var(--red-dim),transparent 70%)}
+.vital-card:hover{transform:translateY(-3px) scale(1.02);border-color:var(--brd2)}
+.vital-card:hover::after{opacity:1}
+.vital-card.crit{border-color:rgba(255,77,109,.3);box-shadow:0 0 20px var(--red-glow)}
+.vital-card:active{transform:scale(.97)}
+.vital-icon{font-size:20px;color:var(--txt2);margin-bottom:4px;position:relative;z-index:1}
+.vital-card.ok .vital-icon{color:var(--teal)}
+.vital-card.warn .vital-icon{color:var(--amber)}
+.vital-card.crit .vital-icon{color:var(--red)}
+.vital-val{font-family:var(--font-head);font-size:25px;font-weight:800;color:var(--txt);line-height:1;position:relative;z-index:1}
+.vital-unit{font-size:10px;color:var(--txt2);position:relative;z-index:1}
+.vital-name{font-size:11px;color:var(--txt2);margin-top:4px;position:relative;z-index:1}
+.vital-time{font-size:10px;color:var(--txt3);opacity:.8;position:relative;z-index:1}
+
+/* CHART */
+.chart-wrap{overflow-x:auto;padding-bottom:4px}
+.spark-svg{display:block;width:100%;height:56px}
+select#trendSelect{font-size:11px;padding:5px 8px;border-radius:8px}
+
+/* TIMELINE */
+.timeline-item{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--brd);animation:fadeSlideIn .3s ease}
+.timeline-item:last-child{border-bottom:none}
+@keyframes fadeSlideIn{from{opacity:0;transform:translateX(-8px)}to{opacity:1;transform:translateX(0)}}
+.tl-dot-wrap{display:flex;flex-direction:column;align-items:center}
+.tl-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;margin-top:3px;box-shadow:0 0 8px currentColor}
+.tl-line{width:1px;flex:1;background:var(--brd);margin-top:4px}
+.tl-content{flex:1}
+.tl-title{font-size:13px;font-weight:500;color:var(--txt)}
+.tl-sub{font-size:11px;color:var(--txt2);margin-top:2px;line-height:1.4}
+.tl-date{font-size:10px;color:var(--txt3);margin-top:3px}
+
+/* ALERTS */
+.alert-item{display:flex;gap:12px;align-items:flex-start;padding:14px;border-radius:14px;margin-bottom:8px;animation:alertPop .4s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border:1px solid transparent}
+@keyframes alertPop{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.alert-crit{background:var(--red-dim);border-color:rgba(255,77,109,.25);box-shadow:0 0 20px var(--red-glow)}
+.alert-warn{background:var(--amber-dim);border-color:rgba(255,184,48,.2)}
+.alert-info{background:var(--blue-dim);border-color:rgba(59,158,255,.2)}
+.alert-ok{background:var(--teal-dim);border-color:rgba(79,161,121,.2)}
+.alert-icon{font-size:20px;flex-shrink:0;margin-top:1px}
+.alert-title{font-size:14px;font-weight:800;color:var(--txt)}
+.alert-desc{font-size:11px;color:var(--txt2);margin-top:4px;line-height:1.5}
+.alert-time{font-size:10px;color:var(--txt3);margin-top:4px}
+
+/* MEDS */
+.med-item{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--brd);transition:all .2s}
+.med-item:last-child{border-bottom:none}
+.med-item:hover{padding-left:4px}
+.med-icon{width:40px;height:40px;border-radius:50%;background:linear-gradient(150deg,var(--purple) 0%,var(--purple2) 100%);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;position:relative;box-shadow:0 5px 14px rgba(168,85,247,.3),inset 0 1.5px 2px rgba(255,255,255,.35),inset 0 -6px 9px rgba(0,0,0,.18)}
+.med-icon::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.5),rgba(255,255,255,0) 45%);pointer-events:none}
+.med-icon i{position:relative;z-index:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.med-name{font-size:13px;font-weight:500;color:var(--txt)}
+.med-dose{font-size:11px;color:var(--txt2);margin-top:2px}
+.med-time{font-size:12px;font-weight:600;color:var(--teal);margin-left:auto;flex-shrink:0}
+.med-check{width:24px;height:24px;border-radius:50%;border:1.5px solid var(--brd2);display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;transition:all .3s cubic-bezier(.34,1.56,.64,1)}
+.med-check:hover{border-color:var(--teal);box-shadow:0 0 10px var(--teal-glow)}
+.med-check.done{background:var(--teal);border-color:var(--teal);box-shadow:0 0 14px var(--teal-glow);animation:checkPop .3s cubic-bezier(.34,1.56,.64,1)}
+@keyframes checkPop{0%{transform:scale(.6)}100%{transform:scale(1)}}
+
+/* MODE TOGGLE */
+.mode-toggle-wrap{background:var(--glass);border:1px solid var(--brd2);border-radius:14px;padding:12px 14px;display:flex;align-items:center;justify-content:space-between;gap:12px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.mode-badge{font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;letter-spacing:.5px;font-family:var(--font-head)}
+.mode-badge.online{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(79,161,121,.2)}
+.mode-badge.offline{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,158,255,.2)}
+.toggle-switch{position:relative;width:48px;height:28px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0;position:absolute}
+.toggle-slider{position:absolute;inset:0;background:var(--glass3);border-radius:14px;cursor:pointer;transition:.3s cubic-bezier(.34,1.56,.64,1);border:1px solid var(--brd2)}
+.toggle-slider::before{content:'';position:absolute;height:20px;width:20px;left:4px;top:4px;background:#fff;border-radius:50%;transition:.3s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 6px rgba(0,0,0,.3)}
+.toggle-switch input:checked+.toggle-slider{background:var(--teal);border-color:var(--teal);box-shadow:0 0 16px var(--teal-glow)}
+.toggle-switch input:checked+.toggle-slider::before{transform:translateX(20px)}
+
+/* CHAT */
+.chat-messages{display:flex;flex-direction:column;gap:10px;margin-bottom:12px;max-height:320px;overflow-y:auto;scroll-behavior:smooth}
+.chat-messages::-webkit-scrollbar{width:2px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--teal-dim)}
+.msg{max-width:88%;padding:11px 14px;border-radius:18px;font-size:13px;line-height:1.6;animation:msgIn .3s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+@keyframes msgIn{from{opacity:0;transform:scale(.88) translateY(8px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.msg-bot{background:var(--glass2);color:var(--txt);border-radius:18px 18px 18px 4px;align-self:flex-start;border:1px solid var(--brd2)}
+.msg-user{background:linear-gradient(135deg,var(--teal),var(--teal2));color:#0A0F14;border-radius:18px 18px 4px 18px;align-self:flex-end;font-weight:500;box-shadow:0 4px 16px var(--teal-glow)}
+.msg-system{background:var(--glass);color:var(--txt2);border-radius:8px;align-self:center;font-size:10px;padding:4px 10px;border:1px solid var(--brd)}
+.chat-input-row{display:flex;gap:8px;align-items:center}
+.chat-input{flex:1;border:1px solid var(--brd2);border-radius:22px;padding:10px 16px;font-size:13px;font-family:var(--font-body);background:var(--glass2);color:var(--txt);outline:none;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);transition:border-color .2s,box-shadow .2s}
+.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-dim)}
+.chat-send{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal2));border:none;color:#0A0F14;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 14px var(--teal-glow);transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.chat-send:hover{transform:scale(1.1);box-shadow:0 6px 20px var(--teal-glow)}
+.chat-send:active{transform:scale(.9)}
+.quick-chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--glass2);border:1px solid var(--brd2);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--txt2);cursor:pointer;transition:all .2s cubic-bezier(.34,1.56,.64,1)}
+.chip:hover{background:var(--teal-dim);color:var(--teal);border-color:var(--teal);transform:scale(1.05)}
+@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
+.thinking-dots span{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--teal);margin:0 1px;animation:blink 1.2s infinite;box-shadow:0 0 6px var(--teal)}
+.thinking-dots span:nth-child(2){animation-delay:.2s}
+.thinking-dots span:nth-child(3){animation-delay:.4s}
+.source-tag{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 8px;border-radius:20px;margin-top:6px;font-weight:600}
+.src-online{background:var(--teal-dim);color:var(--teal);border:1px solid rgba(79,161,121,.2)}
+.src-offline{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(59,158,255,.2)}
+
+/* PHARMACIES */
+.pharma-item{display:flex;gap:12px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--brd);transition:all .2s;animation:fadeSlideIn .3s ease}
+.pharma-item:last-child{border-bottom:none}
+.pharma-item:hover{padding-left:4px}
+.pharma-icon{width:44px;height:44px;border-radius:50%;background:linear-gradient(150deg,var(--teal) 0%,var(--teal2) 100%);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;position:relative;box-shadow:0 5px 16px var(--teal-glow),inset 0 1.5px 2px rgba(255,255,255,.35),inset 0 -6px 10px rgba(0,0,0,.18)}
+.pharma-icon::before{content:'';position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.5),rgba(255,255,255,0) 45%);pointer-events:none}
+.pharma-icon i{position:relative;z-index:1;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25))}
+.pharma-name{font-size:14.5px;font-weight:800;color:var(--txt);font-family:var(--font-head)}
+.pharma-addr{font-size:11px;color:var(--txt2);margin-top:3px;line-height:1.4}
+.pharma-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.pharma-actions{display:flex;gap:6px;margin-left:auto;flex-shrink:0;align-self:center}
+
+/* DOCTORS */
+.doc-card{background:var(--glass);border:1px solid var(--brd);border-radius:14px;padding:14px;display:flex;gap:12px;align-items:flex-start;margin-bottom:8px;transition:all .3s;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.doc-card:hover{border-color:var(--brd2);transform:translateY(-2px);box-shadow:var(--shadow)}
+.doc-avatar{width:46px;height:46px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--teal2));display:flex;align-items:center;justify-content:center;font-family:var(--font-head);font-size:14px;font-weight:700;color:#fff;flex-shrink:0;border:2px solid var(--teal2);box-shadow:0 0 14px var(--teal-glow),inset 0 1.5px 2px rgba(255,255,255,.3)}
+.doc-name{font-size:15px;font-weight:800;color:var(--txt);font-family:var(--font-head)}
+.doc-spec{font-size:11px;color:var(--teal);margin-top:2px;font-weight:600}
+.doc-addr{font-size:11px;color:var(--txt2);margin-top:3px}
+.doc-meta{display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap}
+.doc-actions{display:flex;gap:6px;margin-top:8px}
+.dispo-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;box-shadow:0 0 6px currentColor}
+
+/* MODAL */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);z-index:100;display:flex;align-items:flex-end;justify-content:center;animation:fadeIn .2s ease}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-sheet{background:var(--bg2);border:1px solid var(--brd2);border-radius:24px 24px 0 0;padding:22px 18px 36px;width:100%;max-width:480px;animation:sheetUp .35s cubic-bezier(.34,1.56,.64,1);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px)}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:var(--brd2);border-radius:4px;margin:0 auto 18px}
+.modal-title{font-family:var(--font-head);font-size:17px;font-weight:800;color:var(--txt);margin-bottom:16px}
+.modal-overlay.hidden{display:none}
+.modal-sheet-inner{background:var(--bg2);border:1px solid var(--brd2);border-radius:24px 24px 0 0;padding:22px 18px max(32px,env(safe-area-inset-bottom));width:100%;max-width:480px;animation:sheetUp .35s cubic-bezier(.34,1.56,.64,1);max-height:85%;overflow-y:auto}
+
+/* SPINNER */
+.spinner{width:24px;height:24px;border:2px solid var(--brd2);border-top-color:var(--teal);border-radius:50%;animation:spin .7s linear infinite;box-shadow:0 0 10px var(--teal-glow)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* SETUP / COACHING */
+.setup-page{flex:1;display:flex;flex-direction:column;padding:28px 20px;gap:0;overflow-y:auto}
+.setup-step{display:none;flex-direction:column;gap:16px;animation:tabIn .3s ease}
+.setup-step.active{display:flex}
+.setup-progress{display:flex;gap:6px;margin-bottom:24px}
+.setup-dot{flex:1;height:3px;border-radius:3px;background:var(--brd2);transition:background .4s,box-shadow .4s}
+.setup-dot.done{background:var(--teal);box-shadow:0 0 8px var(--teal-glow)}
+.setup-label{font-size:11px;font-weight:600;color:var(--teal);margin-bottom:4px;text-transform:uppercase;letter-spacing:.8px}
+.setup-title{font-family:var(--font-head);font-size:24px;font-weight:800;color:var(--txt);line-height:1.3}
+.setup-sub{font-size:13px;color:var(--txt2);line-height:1.6}
+.setup-input{width:100%;padding:13px 14px;border:1px solid var(--brd2);border-radius:12px;font-size:14px;font-family:var(--font-body);outline:none;color:var(--txt);background:var(--glass2);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:border-color .2s,box-shadow .2s}
+.setup-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-dim)}
+.setup-input::placeholder{color:var(--txt3)}
+.subject-list{display:flex;flex-direction:column;gap:8px;max-height:260px;overflow-y:auto}
+.subject-row{background:var(--glass);border:1px solid var(--brd);border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.subject-row-name{flex:1;font-size:13px;font-weight:500;color:var(--txt)}
+.credit-badge{background:var(--blue-dim);color:var(--blue);font-size:11px;font-weight:700;padding:3px 9px;border-radius:8px;border:1px solid rgba(59,158,255,.2)}
+.remove-btn{width:26px;height:26px;background:var(--red-dim);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:none;flex-shrink:0;transition:all .2s}
+.remove-btn:hover{background:var(--red);transform:scale(1.1)}
+.remove-btn i{font-size:13px;color:var(--red)}
+.remove-btn:hover i{color:#fff}
+.add-subject-row{display:flex;gap:8px}
+.add-subject-row .setup-input{flex:1;padding:10px 12px;font-size:13px}
+.credit-input{width:64px;padding:10px 8px;border:1px solid var(--brd2);border-radius:10px;font-size:13px;text-align:center;outline:none;font-family:var(--font-body);color:var(--txt);background:var(--glass2);transition:border-color .2s}
+.credit-input:focus{border-color:var(--teal)}
+.coaching-scroll{flex:1;overflow-y:auto;padding-bottom:30px}
+.coach-header{padding:22px 20px 16px;background:linear-gradient(180deg,var(--glass2),var(--glass));border-bottom:1px solid var(--brd)}
+.coach-greeting{font-family:var(--font-head);font-size:22px;font-weight:800;color:var(--txt)}
+.coach-sub{font-size:13px;color:var(--txt2);margin-top:3px}
+.deadline-section{margin:16px 16px 0}
+.deadline-title{font-family:var(--font-head);font-size:10px;font-weight:700;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.deadline-card{background:var(--glass);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:10px;border-left:3px solid;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);animation:fadeSlideIn .3s ease}
+.deadline-card.urgent{border-left-color:var(--red);box-shadow:0 0 16px var(--red-glow)}
+.deadline-card.soon{border-left-color:var(--amber)}
+.deadline-card.ok{border-left-color:var(--teal)}
+.deadline-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.deadline-subject{font-family:var(--font-head);font-size:14.5px;font-weight:800;color:var(--txt)}
+.deadline-days{font-size:11px;font-weight:700;padding:3px 9px;border-radius:20px}
+.days-urgent{background:var(--red-dim);color:var(--red)}
+.days-soon{background:var(--amber-dim);color:var(--amber)}
+.days-ok{background:var(--teal-dim);color:var(--teal)}
+.deadline-date{font-size:11px;color:var(--txt2)}
+.deadline-advice{margin-top:10px;padding-top:10px;border-top:1px solid var(--brd);font-size:12px;color:var(--txt2);line-height:1.6}
+.weekly-update-btn{margin:14px 16px 0;background:linear-gradient(135deg,var(--teal-dim),rgba(59,158,255,.1));border:1px solid rgba(79,161,121,.2);border-radius:16px;padding:14px;display:flex;align-items:center;gap:14px;cursor:pointer;transition:all .25s cubic-bezier(.34,1.56,.64,1)}
+.weekly-update-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px var(--teal-glow)}
+.weekly-icon{width:44px;height:44px;background:var(--teal-dim);border:1px solid rgba(79,161,121,.2);border-radius:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.weekly-icon i{font-size:22px;color:var(--teal)}
+.weekly-title{font-family:var(--font-head);font-size:14.5px;font-weight:800;color:var(--txt)}
+.weekly-sub{font-size:11px;color:var(--txt2);margin-top:2px}
+.subjects-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 16px 0}
+.subject-card{background:var(--glass);border:1px solid var(--brd);border-radius:14px;padding:12px;transition:all .2s}
+.subject-card:hover{border-color:var(--brd2);transform:translateY(-1px)}
+.subject-card-name{font-size:12px;font-weight:700;color:var(--txt);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.subject-card-credits{font-size:10px;color:var(--txt2);margin-top:3px}
+.subject-card-credits span{color:var(--teal);font-weight:700}
+.exam-entry{background:var(--glass);border:1px solid var(--brd);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;flex-direction:column;gap:10px}
+.exam-row{display:flex;gap:8px;align-items:center}
+.exam-subject-select{flex:1;padding:10px 12px;border:1px solid var(--brd2);border-radius:10px;font-size:13px;font-family:var(--font-body);outline:none;color:var(--txt);background:var(--glass2)}
+.exam-date-input{padding:10px 12px;border:1px solid var(--brd2);border-radius:10px;font-size:13px;font-family:var(--font-body);outline:none;color:var(--txt);background:var(--glass2);flex:1}
+.add-exam-btn{display:flex;align-items:center;justify-content:center;gap:8px;padding:12px;background:var(--teal-dim);border-radius:12px;cursor:pointer;color:var(--teal);font-size:13px;font-weight:700;border:1px dashed rgba(79,161,121,.3);margin-bottom:12px;transition:all .2s}
+.add-exam-btn:hover{background:var(--glass2);transform:scale(1.02)}
+.no-exams{display:flex;flex-direction:column;align-items:center;gap:8px;padding:28px 20px;text-align:center;color:var(--txt2)}
+.no-exams i{font-size:40px;opacity:.4;color:var(--teal)}
+.no-exams p{font-size:13px;font-weight:600}
+.no-exams span{font-size:11px}
+.reset-coaching-btn{margin:14px 16px 0;display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--glass);border-radius:14px;border:1px solid var(--brd);cursor:pointer;transition:all .2s}
+.reset-coaching-btn:hover{background:var(--red-dim);border-color:rgba(255,77,109,.3)}
+.reset-coaching-btn i{font-size:18px;color:var(--red)}
+.reset-coaching-btn span{font-size:13px;font-weight:600;color:var(--red)}
+.threshold-grid{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+/* ══════════════════ NOUVEAUX ÉCRANS LAAFI-CONNECT ══════════════════ */
+.screen{position:fixed;inset:0;z-index:100;display:none;flex-direction:column;max-width:480px;margin:0 auto;height:100dvh;overflow-y:auto;background:var(--bg)}
+.screen.active{display:flex}
+
+/* SPLASH */
+#screen-splash{background:linear-gradient(160deg,var(--imperial-green) 0%,var(--imperial-green2) 100%);align-items:center;justify-content:center;text-align:center;padding:32px;overflow:hidden}
+#splash-title{font-family:var(--font-head);font-weight:800;color:#fff;font-size:clamp(24px,7vw,38px);line-height:1.25;letter-spacing:.5px;min-height:3.6em;display:flex;align-items:center;justify-content:center;text-shadow:0 2px 20px rgba(0,0,0,.25)}
+#splash-title .cursor{display:inline-block;width:3px;height:.9em;background:#fff;margin-left:3px;animation:blink 1s step-end infinite}
+@keyframes blink{50%{opacity:0}}
+#splash-enter{margin-top:40px;opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+#splash-enter.show{opacity:1;transform:translateY(0)}
+.splash-card{background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.35);backdrop-filter:blur(10px);border-radius:22px;padding:22px 26px;display:flex;flex-direction:column;align-items:center;gap:10px;cursor:pointer;transition:all .3s cubic-bezier(.34,1.56,.64,1);width:220px}
+.splash-card:hover{transform:translateY(-4px) scale(1.03);background:rgba(255,255,255,.2);box-shadow:0 12px 32px rgba(0,0,0,.25)}
+.splash-card:active{transform:scale(.96)}
+.splash-card .icon-circle{width:56px;height:56px;border-radius:50%;background:radial-gradient(circle,var(--laafi-gold),#c98f00);display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 24px rgba(242,183,5,.5)}
+.splash-card span{color:#fff;font-family:var(--font-head);font-weight:700;font-size:14px}
+.splash-hint{color:rgba(255,255,255,.65);font-size:11px;margin-top:10px}
+
+/* CHOICE SCREEN */
+#screen-choice{align-items:center;justify-content:center;padding:32px;gap:36px;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(11,110,79,.12),transparent 70%),var(--bg)}
+.choice-header{text-align:center}
+.choice-header .logo{font-size:44px;margin-bottom:10px}
+.choice-header h1{font-family:var(--font-head);font-size:20px;color:var(--txt);font-weight:800}
+.choice-header p{font-size:12px;color:var(--txt2);margin-top:6px}
+.choice-circles{display:flex;gap:26px;align-items:center}
+.circle-btn{width:150px;height:150px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;cursor:pointer;border:2px solid var(--brd2);transition:all .3s cubic-bezier(.34,1.56,.64,1);text-align:center;padding:10px}
+.circle-btn i{font-size:30px}
+.circle-btn span{font-family:var(--font-head);font-weight:700;font-size:13px;color:var(--txt)}
+.circle-btn small{font-size:9px;color:var(--txt2);line-height:1.3}
+#circle-inform{background:var(--blue-dim);border-color:rgba(59,158,255,.3)}
+#circle-inform i{color:var(--blue)}
+#circle-inform:hover{transform:translateY(-6px) scale(1.05);box-shadow:0 12px 30px var(--blue-dim)}
+#circle-health{background:var(--teal-dim);border-color:rgba(79,161,121,.3)}
+#circle-health i{color:var(--teal)}
+#circle-health:hover{transform:translateY(-6px) scale(1.05);box-shadow:0 12px 30px var(--teal-glow)}
+
+/* AUTH SCREEN */
+#screen-auth{align-items:center;justify-content:center;padding:28px}
+.auth-box{width:100%;max-width:360px;background:var(--glass);border:1px solid var(--brd2);border-radius:24px;padding:30px 24px;backdrop-filter:blur(16px)}
+.auth-logo{text-align:center;margin-bottom:20px}
+.auth-logo .em{font-size:34px}
+.auth-logo .name{font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--txt);margin-top:4px}
+.auth-view{display:none;flex-direction:column;gap:10px}
+.auth-view.active{display:flex}
+.auth-tabs{display:flex;gap:6px;margin-bottom:16px;background:var(--glass);border-radius:12px;padding:4px}
+.auth-tab-btn{flex:1;padding:8px;border-radius:9px;border:none;background:none;color:var(--txt2);cursor:pointer;font-size:13px;font-family:var(--font-head);font-weight:700;transition:all .2s}
+.auth-tab-btn.active{background:var(--teal);color:#0A0F14}
+.auth-input{width:100%;padding:13px 14px;border:1px solid var(--brd2);border-radius:10px;background:var(--glass2);color:var(--txt);font-size:14.5px;outline:none;box-sizing:border-box;font-family:var(--font-body);color-scheme:dark}
+.auth-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-dim)}
+.auth-link{background:none;border:none;color:var(--teal);font-size:12px;cursor:pointer;font-family:var(--font-body);text-align:center;padding:4px}
+.auth-back{font-size:12px;color:var(--txt2);cursor:pointer;display:flex;align-items:center;gap:4px;margin-bottom:14px}
+.auth-step-title{font-family:var(--font-head);font-weight:700;font-size:15px;color:var(--txt);margin-bottom:2px}
+.auth-step-sub{font-size:11px;color:var(--txt2);margin-bottom:10px;line-height:1.4}
+
+/* S'INFORMER SCREEN */
+#screen-inform{padding:0}
+.inform-hero{padding:52px 20px 22px;background:linear-gradient(160deg,var(--blue-dim),transparent);text-align:center}
+.inform-hero i{font-size:34px;color:var(--blue)}
+.inform-hero h2{font-family:var(--font-head);font-size:18px;margin-top:8px;color:var(--txt)}
+.inform-hero p{font-size:12px;color:var(--txt2);margin-top:6px;line-height:1.5;padding:0 20px}
+.inform-list{padding:16px;display:flex;flex-direction:column;gap:12px}
+.inform-item{background:var(--glass);border:1px solid var(--brd);border-radius:16px;padding:16px;display:flex;gap:12px;align-items:flex-start;cursor:pointer;transition:all .2s}
+.inform-item:hover{border-color:var(--blue);transform:translateY(-2px)}
+.inform-item .ii-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0;box-shadow:0 4px 14px rgba(0,0,0,.25)}
+
+/* ═══ Badges d'icônes "réalistes" : dégradé + reflet + ombre portée ═══ */
+.icon-badge{
+  width:44px;height:44px;border-radius:50%;flex-shrink:0;position:relative;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 5px 16px rgba(0,0,0,.28),inset 0 1.5px 2px rgba(255,255,255,.35),inset 0 -6px 10px rgba(0,0,0,.18);
+}
+.icon-badge i{font-size:19px;color:#fff;filter:drop-shadow(0 1px 1px rgba(0,0,0,.25));position:relative;z-index:1}
+.icon-badge::before{
+  content:'';position:absolute;inset:0;border-radius:50%;
+  background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.55),rgba(255,255,255,0) 45%);
+  pointer-events:none;
+}
+.icon-badge.sz-sm{width:38px;height:38px}
+.icon-badge.sz-sm i{font-size:17px}
+.icon-badge.sz-lg{width:46px;height:46px}
+.icon-badge.sz-lg i{font-size:20px}
+.badge-teal{background:linear-gradient(150deg,var(--teal) 0%,var(--teal2) 100%)}
+.badge-purple{background:linear-gradient(150deg,var(--purple) 0%,var(--purple2) 100%)}
+.badge-amber{background:linear-gradient(150deg,var(--amber) 0%,var(--amber2) 100%)}
+.badge-blue{background:linear-gradient(150deg,var(--blue) 0%,var(--blue2) 100%)}
+.badge-green{background:linear-gradient(150deg,var(--green) 0%,var(--green2) 100%)}
+.badge-red{background:linear-gradient(150deg,var(--red) 0%,var(--red2) 100%)}
+.inform-item h4{font-family:var(--font-head);font-size:14.5px;font-weight:800;color:var(--txt);margin-bottom:3px}
+.inform-item p{font-size:11px;color:var(--txt2);line-height:1.4}
+/* ═══ Adaptabilité petits écrans (≤360px) ═══ */
+@media (max-width:360px){
+  .choice-circles{gap:16px}
+  .circle-btn{width:130px;height:130px}
+  .card{padding:14px}
+  .auth-box{padding:24px 18px}
+}
+@media (max-width:340px){
+  .circle-btn{width:118px;height:118px}
+  .circle-btn i{font-size:26px}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════ ÉCRAN 1 : SPLASH DE BIENVENUE ══════════ -->
+<div class="screen active" id="screen-splash">
+  <div id="splash-title"></div>
+  <div id="splash-enter">
+    <div class="splash-card" onclick="goToChoice()">
+      <div class="icon-circle"><i class="ti ti-heart-handshake"></i></div>
+      <span>On s'occupe de vous</span>
+    </div>
+    <div class="splash-hint">Touchez pour continuer</div>
+  </div>
+</div>
+
+<!-- ══════════ ÉCRAN 2 : CHOIX S'INFORMER / MA SANTÉ ══════════ -->
+<div class="screen" id="screen-choice">
+  <div class="choice-header">
+    <div class="logo">🌿</div>
+    <h1>Laafi-Connect</h1>
+    <p>Que souhaitez-vous faire aujourd'hui ?</p>
+  </div>
+  <div class="choice-circles">
+    <div class="circle-btn" id="circle-inform" onclick="chooseInform()">
+      <i class="ti ti-bulb"></i>
+      <span>S'informer</span>
+      <small>Bien-être &amp; détente</small>
+    </div>
+    <div class="circle-btn" id="circle-health" onclick="chooseHealth()">
+      <i class="ti ti-heartbeat"></i>
+      <span>Ma Santé</span>
+      <small>Mon suivi médical</small>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ ÉCRAN 3 : S'INFORMER (bien-être) ══════════ -->
+<div class="screen" id="screen-inform">
+  <div class="inform-hero">
+    <div class="auth-back" style="justify-content:center;color:var(--blue)" onclick="backToChoiceFromInform()"><i class="ti ti-arrow-left"></i> Retour</div>
+    <i class="ti ti-sparkles"></i>
+    <h2>Un moment pour soi</h2>
+    <p>Un espace pensé pour vous changer les idées, apaiser l'esprit et prendre soin de votre santé psychologique — pas seulement de votre maladie.</p>
+  </div>
+  <div class="inform-list">
+    <div class="inform-item" onclick="showBreathingTips()">
+      <div class="icon-badge badge-teal"><i class="ti ti-lungs"></i></div>
+      <div><h4>Respiration guidée</h4><p>Exercices courts (2-5 min) pour réduire le stress et l'anxiété liés à la maladie.</p></div>
+    </div>
+    <div class="inform-item" onclick="showSoundPlayer()">
+      <div class="icon-badge badge-purple"><i class="ti ti-music"></i></div>
+      <div><h4>Sons &amp; musique apaisante</h4><p>Playlists calmes, sons de la nature, pour se détendre à tout moment.</p></div>
+    </div>
+    <div class="inform-item" onclick="showMoodJournal()">
+      <div class="icon-badge badge-amber"><i class="ti ti-notebook"></i></div>
+      <div><h4>Journal d'humeur</h4><p>Notez comment vous vous sentez chaque jour pour mieux comprendre vos émotions.</p></div>
+    </div>
+    <div class="inform-item" onclick="showDiseaseGuides()">
+      <div class="icon-badge badge-blue"><i class="ti ti-book-2"></i></div>
+      <div><h4>Comprendre ma maladie</h4><p>Fiches simples et rassurantes sur les pathologies chroniques courantes.</p></div>
+    </div>
+    <div class="inform-item" onclick="showWellnessChallenges()">
+      <div class="icon-badge badge-green"><i class="ti ti-confetti"></i></div>
+      <div><h4>Défis bien-être</h4><p>De petits défis quotidiens et légers, pour sourire et rester motivé(e).</p></div>
+    </div>
+    <button class="btn-secondary" onclick="chooseHealthFromInform()"><i class="ti ti-heartbeat"></i> Accéder à Ma Santé</button>
+  </div>
+</div>
+
+<!-- ══════════ ÉCRAN 4 : AUTHENTIFICATION ══════════ -->
+<div class="screen" id="screen-auth">
+  <div class="auth-box">
+    <div class="auth-back" onclick="backToChoiceFromAuth()"><i class="ti ti-arrow-left"></i> Retour</div>
+    <div class="auth-logo"><div class="em">🌿</div><div class="name">Laafi-Connect</div></div>
+
+    <!-- Vue Login / Register -->
+    <div class="auth-view active" id="auth-view-main">
+      <div class="auth-tabs">
+        <button class="auth-tab-btn active" id="tabLogin" onclick="showAuthTab('login')">Connexion</button>
+        <button class="auth-tab-btn" id="tabReg" onclick="showAuthTab('register')">Créer un compte</button>
+      </div>
+      <div style="font-size:11px;color:var(--txt2);text-align:center;margin-bottom:6px" id="authSubtitle">Connectez-vous pour accéder à votre suivi</div>
+
+      <input id="authName" class="auth-input" type="text" placeholder="Prénom & Nom" style="display:none"/>
+      <div class="row2" id="authRegExtra" style="display:none">
+        <div class="field"><label>Âge</label><input id="authAge" class="auth-input" type="number" placeholder="Ex: 34"/></div>
+        <div class="field"><label>Sexe</label>
+          <select id="authSexe" class="auth-input">
+            <option value="F">Féminin</option><option value="M">Masculin</option>
+          </select>
+        </div>
+      </div>
+      <div id="authRegExtra2" style="display:none">
+        <div class="field"><label>Maladie / pathologie</label>
+          <select id="authMaladie" class="auth-input">
+            <option value="">-- Choisir --</option>
+            <option value="diabete">Diabète type 2</option>
+            <option value="hta">Hypertension</option>
+            <option value="asthme">Asthme</option>
+            <option value="cardio">Insuffisance cardiaque</option>
+            <option value="rein">IRC (Rein)</option>
+            <option value="multi">Poly-pathologie</option>
+          </select>
+        </div>
+        <div class="field" style="margin-top:8px"><label>Stade de la maladie</label><input id="authStade" class="auth-input" type="text" placeholder="Ex: modéré, stade 2…"/></div>
+        <div class="field" style="margin-top:8px"><label>Allergies connues</label><input id="authAllergies" class="auth-input" type="text" placeholder="Ex: pénicilline, aucune…"/></div>
+        <div class="field" style="margin-top:8px"><label>Question secrète (pour récupérer votre mot de passe)</label><input id="authSecQ" class="auth-input" type="text" placeholder="Ex: nom de votre premier animal"/></div>
+        <div class="field" style="margin-top:8px"><label>Réponse secrète</label><input id="authSecA" class="auth-input" type="text" placeholder="Votre réponse"/></div>
+      </div>
+
+      <input id="authEmail" class="auth-input" type="email" placeholder="Email"/>
+      <input id="authPass" class="auth-input" type="password" placeholder="Mot de passe (8 car. min.)" onkeydown="if(event.key==='Enter')submitAuth()"/>
+      <div id="authError" style="font-size:11px;color:var(--red);min-height:14px;text-align:center"></div>
+      <button id="authSubmitBtn" class="btn-primary" onclick="submitAuth()">Continuer</button>
+      <button class="auth-link" onclick="showForgotPassword()">Mot de passe oublié ?</button>
+      <button class="btn-secondary" onclick="skipAuth()">Continuer hors-ligne →</button>
+      <div style="text-align:center;font-size:10px;color:var(--txt3);margin-top:6px" id="serverStatus">Vérification du serveur…</div>
+    </div>
+
+    <!-- Vue Mot de passe oublié : étape 1 email -->
+    <div class="auth-view" id="auth-view-forgot1">
+      <div class="auth-step-title">Mot de passe oublié</div>
+      <div class="auth-step-sub">Entrez l'email associé à votre compte pour vérifier votre identité.</div>
+      <input id="fpEmail" class="auth-input" type="email" placeholder="Email"/>
+      <div id="fpError1" style="font-size:11px;color:var(--red);min-height:14px;text-align:center"></div>
+      <button class="btn-primary" onclick="fpStepEmail()">Continuer</button>
+      <button class="auth-link" onclick="backToLogin()">← Retour à la connexion</button>
+    </div>
+
+    <!-- Vue Mot de passe oublié : étape 2 question secrète -->
+    <div class="auth-view" id="auth-view-forgot2">
+      <div class="auth-step-title">Vérification d'identité</div>
+      <div class="auth-step-sub" id="fpQuestionDisplay">Répondez à votre question secrète pour confirmer que c'est bien vous.</div>
+      <input id="fpAnswer" class="auth-input" type="text" placeholder="Votre réponse"/>
+      <div id="fpError2" style="font-size:11px;color:var(--red);min-height:14px;text-align:center"></div>
+      <button class="btn-primary" onclick="fpStepVerify()">Vérifier</button>
+      <button class="auth-link" onclick="backToLogin()">← Annuler</button>
+    </div>
+
+    <!-- Vue Mot de passe oublié : étape 3 nouveau mot de passe -->
+    <div class="auth-view" id="auth-view-forgot3">
+      <div class="auth-step-title">Identité confirmée ✓</div>
+      <div class="auth-step-sub">Définissez votre nouveau mot de passe.</div>
+      <input id="fpNewPass" class="auth-input" type="password" placeholder="Nouveau mot de passe (8 car. min.)"/>
+      <input id="fpNewPass2" class="auth-input" type="password" placeholder="Confirmer le mot de passe"/>
+      <div id="fpError3" style="font-size:11px;color:var(--red);min-height:14px;text-align:center"></div>
+      <button class="btn-primary" onclick="fpStepReset()">Réinitialiser le mot de passe</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ APPLICATION PRINCIPALE (après connexion) ══════════ -->
+<div id="mainAppScreen" style="display:none;flex-direction:column;height:100%;position:relative;z-index:1">
+
+<!-- TOPBAR -->
+<div class="topbar">
+  <div class="topbar-left">
+    <div class="avatar" id="topAvatar">M</div>
+    <div>
+      <div class="topbar-name" id="topName">Laafi-Connect</div>
+      <div class="topbar-sub" id="topPath">Chargement…</div>
+    </div>
+  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <div class="score-pill" onclick="showScoreDetail()">
+      <i class="ti ti-heartbeat" style="color:var(--teal);font-size:15px"></i>
+      <div>
+        <div class="score-val" id="topScore">--</div>
+        <div class="score-lbl">Forme</div>
+      </div>
+    </div>
+    <div class="theme-btn" onclick="toggleTheme()" title="Thème">
+      <i class="ti ti-sun-moon"></i>
+    </div>
+    <div class="logout-btn" onclick="openSosModal()" title="Urgence" style="background:rgba(255,77,109,.28)">
+      <i class="ti ti-siren"></i>
+    </div>
+    <div class="logout-btn" onclick="logoutAccount()" title="Déconnexion">
+      <i class="ti ti-logout"></i>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL SOS URGENCE -->
+<div class="modal-overlay" id="sosModal" style="display:none" onclick="closeSosModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="color:var(--red)"><i class="ti ti-siren"></i> Urgence santé</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:16px;line-height:1.5">Choisissez le service à contacter. Une confirmation vous sera demandée avant de lancer l'appel.</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="doc-card" style="cursor:pointer" onclick="confirmEmergencyCall('112','SAMU — Urgence médicale vitale')">
+        <div class="doc-avatar" style="background:var(--red)"><i class="ti ti-ambulance"></i></div>
+        <div style="flex:1"><div class="doc-name">SAMU</div><div class="doc-spec">112 · Urgence médicale vitale</div></div>
+      </div>
+      <div class="doc-card" style="cursor:pointer" onclick="confirmEmergencyCall('18','Sapeurs-Pompiers — Secours & accidents')">
+        <div class="doc-avatar" style="background:var(--amber)"><i class="ti ti-flame"></i></div>
+        <div style="flex:1"><div class="doc-name">Sapeurs-Pompiers</div><div class="doc-spec">18 · Secours & accidents</div></div>
+      </div>
+      <div class="doc-card" style="cursor:pointer" onclick="confirmEmergencyCall('17','Police Secours')">
+        <div class="doc-avatar" style="background:var(--blue)"><i class="ti ti-shield"></i></div>
+        <div style="flex:1"><div class="doc-name">Police Secours</div><div class="doc-spec">17 · Sécurité, agression</div></div>
+      </div>
+      <div class="doc-card" style="cursor:pointer" onclick="confirmEmergencyCall('80001111','Centre Antipoison')">
+        <div class="doc-avatar" style="background:var(--purple)"><i class="ti ti-skull"></i></div>
+        <div style="flex:1"><div class="doc-name">Centre Antipoison</div><div class="doc-spec">80 00 11 11</div></div>
+      </div>
+      <div class="doc-card" style="cursor:pointer" onclick="confirmEmergencyCall('80001112','Urgences Psychiatriques')">
+        <div class="doc-avatar" style="background:var(--teal)"><i class="ti ti-brain"></i></div>
+        <div style="flex:1"><div class="doc-name">Urgences Psychiatriques</div><div class="doc-spec">80 00 11 12</div></div>
+      </div>
+    </div>
+    <button class="btn-secondary" style="margin-top:14px" onclick="closeSosModal()">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL RESPIRATION -->
+<div class="modal-overlay" id="breathModal" style="display:none" onclick="closeGenericModal(event,'breathModal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title"><i class="ti ti-lungs"></i> Techniques de respiration</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.5">Quelques exercices simples et reconnus pour apaiser le stress et l'anxiété. À pratiquer assis(e), confortablement.</div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <div class="doc-card"><div class="doc-avatar" style="background:var(--teal)"><i class="ti ti-clock"></i></div>
+        <div><div class="doc-name">Respiration 4-7-8</div><div class="doc-spec">Inspirez 4s par le nez, retenez 7s, expirez lentement 8s par la bouche. Répétez 4 cycles. Très efficace avant de dormir ou en cas d'anxiété.</div></div></div>
+      <div class="doc-card"><div class="doc-avatar" style="background:var(--teal)"><i class="ti ti-heartbeat"></i></div>
+        <div><div class="doc-name">Cohérence cardiaque (365)</div><div class="doc-spec">3 fois par jour, respirez 6 fois par minute (5s inspiration / 5s expiration) pendant 5 minutes. Aide à réguler le stress et la tension.</div></div></div>
+      <div class="doc-card"><div class="doc-avatar" style="background:var(--teal)"><i class="ti ti-square"></i></div>
+        <div><div class="doc-name">Respiration carrée (box breathing)</div><div class="doc-spec">Inspirez 4s, retenez 4s, expirez 4s, retenez 4s poumons vides. Idéal pour retrouver son calme rapidement.</div></div></div>
+      <div class="doc-card"><div class="doc-avatar" style="background:var(--teal)"><i class="ti ti-wind"></i></div>
+        <div><div class="doc-name">Respiration abdominale</div><div class="doc-spec">Une main sur le ventre, inspirez en gonflant le ventre (pas la poitrine), expirez lentement. 5 minutes suffisent pour faire baisser le stress.</div></div></div>
+      <div class="doc-card"><div class="doc-avatar" style="background:var(--teal)"><i class="ti ti-bolt"></i></div>
+        <div><div class="doc-name">Soupir physiologique</div><div class="doc-spec">Deux inspirations courtes par le nez (l'une après l'autre) puis une longue expiration par la bouche. Calme le stress en quelques secondes, utile en cas de crise d'angoisse.</div></div></div>
+    </div>
+    <button class="btn-secondary" style="margin-top:14px" onclick="closeGenericModal(null,'breathModal')">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL DÉFIS BIEN-ÊTRE -->
+<div class="modal-overlay" id="challengeModal" style="display:none" onclick="closeGenericModal(event,'challengeModal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title"><i class="ti ti-confetti"></i> Défis bien-être du jour</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.5">De petites habitudes, simples et efficaces, qui font vraiment du bien au quotidien. Cochez ce que vous avez réalisé aujourd'hui.</div>
+    <div id="challengeList" style="display:flex;flex-direction:column;gap:8px"></div>
+    <button class="btn-secondary" style="margin-top:14px" onclick="closeGenericModal(null,'challengeModal')">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL SONS APAISANTS -->
+<div class="modal-overlay" id="soundModal" style="display:none" onclick="closeGenericModal(event,'soundModal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title"><i class="ti ti-music"></i> Sons apaisants</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.5">Générés directement sur votre appareil — fonctionne même hors-ligne, aucun fichier à télécharger. Touchez un son pour le lancer, puis à nouveau pour l'arrêter.</div>
+    <div id="soundList" style="display:flex;flex-direction:column;gap:10px"></div>
+    <div style="margin-top:14px">
+      <label style="font-size:11px;color:var(--txt2);display:block;margin-bottom:6px">Volume</label>
+      <input type="range" id="soundVolume" min="0" max="100" value="45" style="width:100%" oninput="setSoundVolume(this.value)">
+    </div>
+    <button class="btn-secondary" style="margin-top:14px" onclick="stopAllSounds();closeGenericModal(null,'soundModal')">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL JOURNAL D'HUMEUR -->
+<div class="modal-overlay" id="moodModal" style="display:none" onclick="closeGenericModal(event,'moodModal')">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title"><i class="ti ti-notebook"></i> Journal d'humeur</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.5">Comment vous sentez-vous aujourd'hui ? Prendre l'habitude de le noter aide à mieux comprendre ce qui influence votre moral.</div>
+    <div id="moodPicker" style="display:flex;justify-content:space-between;margin-bottom:14px"></div>
+    <textarea id="moodNote" class="auth-input" style="min-height:70px;resize:vertical" placeholder="Un mot sur votre journée (optionnel)…"></textarea>
+    <button class="btn-primary" style="margin-top:10px" onclick="saveMoodEntry()"><i class="ti ti-device-floppy"></i> Enregistrer mon humeur du jour</button>
+    <div class="section-label" style="margin-top:18px">Historique récent</div>
+    <div id="moodHistory" style="display:flex;flex-direction:column;gap:8px;max-height:180px;overflow-y:auto"></div>
+    <button class="btn-secondary" style="margin-top:14px" onclick="closeGenericModal(null,'moodModal')">Fermer</button>
+  </div>
+</div>
+
+<!-- MODAL COMPRENDRE MA MALADIE -->
+<div class="modal-overlay" id="diseaseModal" style="display:none" onclick="closeGenericModal(event,'diseaseModal')">
+  <div class="modal-sheet" style="max-height:80vh;overflow-y:auto">
+    <div class="modal-handle"></div>
+    <div class="modal-title"><i class="ti ti-book-2"></i> Comprendre ma maladie</div>
+    <div style="font-size:12px;color:var(--txt2);margin-bottom:14px;line-height:1.5">Des repères simples et rassurants — cela ne remplace jamais l'avis de votre médecin.</div>
+    <div id="diseaseList" style="display:flex;flex-direction:column;gap:10px"></div>
+    <button class="btn-secondary" style="margin-top:14px" onclick="closeGenericModal(null,'diseaseModal')">Fermer</button>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- TAB CONSTANTES -->
+<div class="tab-content active" id="tab-constantes">
+  <div class="vital-grid" id="vitalGrid"></div>
+  <div class="card">
+    <div class="section-label">Tendance 7 jours</div>
+    <div style="margin-bottom:8px">
+      <select id="trendSelect" onchange="renderTrend()">
+        <option value="ta_sys">Tension systolique</option>
+        <option value="glycemie">Glycémie</option>
+        <option value="poids">Poids</option>
+        <option value="spo2">SpO2</option>
+        <option value="pouls">Pouls</option>
+      </select>
+    </div>
+    <div class="chart-wrap">
+      <svg class="spark-svg" id="sparkSvg" viewBox="0 0 320 56" preserveAspectRatio="none"></svg>
+    </div>
+    <div id="trendLabels" style="display:flex;justify-content:space-between;font-size:9px;color:var(--txt2);margin-top:4px"></div>
+  </div>
+  <button class="btn-primary" onclick="openAddModal()">
+    <i class="ti ti-plus"></i>Saisir une constante
+  </button>
+</div>
+
+<!-- TAB CARNET -->
+<div class="tab-content" id="tab-carnet">
+  <div class="card">
+    <div class="section-label">Informations patient</div>
+    <div class="row2">
+      <div class="field"><label>Prénom & Nom</label><input type="text" id="patName" placeholder="Nom complet"/></div>
+      <div class="field"><label>Date de naissance</label><input type="date" id="patDOB"/></div>
+    </div>
+    <div style="margin-top:10px" class="row2">
+      <div class="field"><label>Pathologie principale</label>
+        <select id="patPath">
+          <option value="">-- Choisir --</option>
+          <option value="diabete">Diabète type 2</option>
+          <option value="hta">Hypertension</option>
+          <option value="asthme">Asthme</option>
+          <option value="cardio">Insuffisance cardiaque</option>
+          <option value="rein">IRC (Rein)</option>
+          <option value="multi">Poly-pathologie</option>
+        </select>
+      </div>
+      <div class="field"><label>Groupe sanguin</label>
+        <select id="patBlood">
+          <option>A+</option><option>A-</option><option>B+</option><option>B-</option>
+          <option>AB+</option><option>AB-</option><option>O+</option><option>O-</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:10px" class="field"><label>Stade de la maladie</label><input type="text" id="patStade" placeholder="ex: modéré, stade 2…"/></div>
+    <div style="margin-top:10px" class="field"><label>Allergies connues</label><input type="text" id="patAllergies" placeholder="ex: pénicilline, aspirine"/></div>
+    <button class="btn-primary" style="margin-top:14px" onclick="saveProfile()"><i class="ti ti-device-floppy"></i>Enregistrer</button>
+  </div>
+  <div class="card">
+    <div class="section-label">Mes résultats d'examens (photos)</div>
+    <div style="font-size:11px;color:var(--txt2);margin-bottom:10px;line-height:1.4">Prenez une photo de vos résultats (analyses, radios, ordonnances) pour les garder toujours avec vous, même hors-ligne.</div>
+    <input type="file" id="examPhotoInput" accept="image/*" capture="environment" multiple style="display:none" onchange="addExamPhotos(event)">
+    <div id="examPhotoGrid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px"></div>
+    <button class="btn-secondary" onclick="document.getElementById('examPhotoInput').click()"><i class="ti ti-camera-plus"></i> Ajouter une photo</button>
+  </div>
+
+  <div class="card">
+    <div class="section-label">Historique des mesures</div>
+    <div id="historyList"><div style="text-align:center;padding:20px;color:var(--txt2);font-size:13px">Aucune mesure enregistrée</div></div>
+  </div>
+</div>
+
+<!-- TAB ALERTES -->
+<div class="tab-content" id="tab-alertes">
+  <div id="alertsList"></div>
+  <div class="card">
+    <div class="section-label">Rappels médicaments</div>
+    <div id="medsList"></div>
+    <button class="btn-secondary" style="margin-top:12px" onclick="openAddMed()">
+      <i class="ti ti-pill"></i>Ajouter un médicament
+    </button>
+  </div>
+  <div class="card">
+    <div class="section-label">Seuils d'alerte</div>
+    <div class="threshold-grid">
+      <div class="row2">
+        <div class="field"><label>TA systolique max (mmHg)</label><input type="number" id="thTA" value="140"/></div>
+        <div class="field"><label>Glycémie max (g/L)</label><input type="number" id="thGly" value="1.8" step="0.1"/></div>
+      </div>
+      <div class="row2">
+        <div class="field"><label>SpO2 min (%)</label><input type="number" id="thSpo2" value="94"/></div>
+        <div class="field"><label>Pouls max (bpm)</label><input type="number" id="thPouls" value="100"/></div>
+      </div>
+      <button class="btn-primary" onclick="saveThresholds()"><i class="ti ti-settings"></i>Enregistrer les seuils</button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB CHATBOT -->
+<div class="tab-content" id="tab-chatbot">
+  <div class="mode-toggle-wrap">
+    <div style="flex:1">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:3px">
+        <span class="mode-badge online" id="chatModeBadge">En ligne</span>
+        <span style="font-size:11px;color:var(--txt2)" id="chatModeInfo">Analyse via IA · Conseils personnalisés</span>
+      </div>
+    </div>
+    <label class="toggle-switch">
+      <input type="checkbox" checked onchange="switchChatMode(this.checked)">
+      <span class="toggle-slider"></span>
+    </label>
+  </div>
+  <div class="card" style="padding:12px">
+    <div class="quick-chips" style="margin-bottom:10px">
+      <div class="chip" onclick="insertChip(this)">Ma tension est élevée</div>
+      <div class="chip" onclick="insertChip(this)">Oubli de médicament</div>
+      <div class="chip" onclick="insertChip(this)">Analyser mes constantes</div>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg msg-bot">Bonjour ! Je suis votre assistant Laafi-Connect. Posez-moi une question sur vos constantes ou votre traitement.</div>
+    </div>
+    <div class="chat-input-row">
+      <input class="chat-input" id="chatInput" type="text" placeholder="Posez votre question…" onkeydown="if(event.key==='Enter')sendChat()"/>
+      <button class="chat-send" onclick="sendChat()"><i class="ti ti-send" style="font-size:16px"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB PHARMACIES -->
+<div class="tab-content" id="tab-pharma">
+  <div class="card" style="padding:12px 14px">
+    <div style="display:flex;align-items:center;gap:10px">
+      <div style="width:38px;height:38px;border-radius:11px;background:var(--teal-dim);border:1px solid rgba(79,161,121,.2);display:flex;align-items:center;justify-content:center;box-shadow:0 0 14px var(--teal-glow)">
+        <i class="ti ti-map-pin" style="color:var(--teal);font-size:18px"></i>
+      </div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:600;color:var(--txt);font-family:var(--font-head)" id="pharmaLoc">Localisation…</div>
+        <div style="font-size:11px;color:var(--txt2)">Pharmacies de garde · Ouagadougou</div>
+      </div>
+      <button class="btn-icon" onclick="loadPharmas()" title="Actualiser"><i class="ti ti-refresh"></i></button>
+    </div>
+  </div>
+  <div id="pharmaList">
+    <div style="display:flex;align-items:center;gap:12px;padding:24px 16px;color:var(--txt2);font-size:13px">
+      <div class="spinner"></div>Localisation en cours…
+    </div>
+  </div>
+</div>
+
+<!-- TAB SPÉCIALISTES -->
+<div class="tab-content" id="tab-docs">
+  <div class="card" style="padding:12px 14px">
+    <div class="field"><label>Filtrer par spécialité</label>
+      <select id="specFilter" onchange="filterDocs()">
+        <option value="">Toutes spécialités</option>
+        <option value="cardio">Cardiologie</option>
+        <option value="endocrino">Endocrinologie / Diabétologie</option>
+        <option value="pneumo">Pneumologie</option>
+        <option value="nephro">Néphrologie</option>
+        <option value="generaliste">Médecin généraliste</option>
+        <option value="urgentiste">Urgentiste</option>
+        <option value="infectio">Infectiologue</option>
+        <option value="hepato">Hépato-gastro-entérologue</option>
+        <option value="dermato">Dermatologue</option>
+        <option value="hemato">Hématologue</option>
+        <option value="allergo">Allergologue</option>
+        <option value="psychiatre">Psychiatre</option>
+      </select>
+    </div>
+  </div>
+  <div class="card">
+    <div class="section-label">Mon médecin traitant</div>
+    <div id="myDoctorCard"></div>
+  </div>
+  <div class="card">
+    <div class="section-label">Spécialistes disponibles</div>
+    <div id="docsList"></div>
+    <button class="btn-secondary" style="margin-top:12px" onclick="openAddDocModal()"><i class="ti ti-user-plus"></i> Ajouter un médecin</button>
+  </div>
+</div>
+
+<!-- MODAL AJOUT MÉDECIN -->
+<div class="modal-overlay" id="addDocModal" style="display:none" onclick="closeAddDocModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Ajouter un médecin</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="field"><label>Nom du médecin</label><input type="text" id="newDocName" placeholder="Ex: Dr. Jean Kaboré"/></div>
+      <div class="field"><label>Spécialité</label>
+        <select id="newDocSpec">
+          <option value="cardio">Cardiologue</option>
+          <option value="endocrino">Diabétologue</option>
+          <option value="pneumo">Pneumologue</option>
+          <option value="nephro">Néphrologue</option>
+          <option value="generaliste">Médecin généraliste</option>
+          <option value="urgentiste">Urgentiste</option>
+          <option value="infectio">Infectiologue</option>
+          <option value="hepato">Hépato-gastro-entérologue</option>
+          <option value="dermato">Dermatologue</option>
+          <option value="hemato">Hématologue</option>
+          <option value="allergo">Allergologue</option>
+          <option value="psychiatre">Psychiatre</option>
+        </select>
+      </div>
+      <div class="field"><label>Téléphone (optionnel)</label><input type="text" id="newDocTel" placeholder="+226 ..."/></div>
+      <div class="field"><label>Adresse (optionnel)</label><input type="text" id="newDocAddr" placeholder="Cabinet, quartier…"/></div>
+      <button class="btn-primary" onclick="saveNewDoc()"><i class="ti ti-device-floppy"></i> Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DISCUSSION AVEC LE SPÉCIALISTE -->
+<div class="modal-overlay" id="docChatModal" style="display:none" onclick="closeDocChat(event)">
+  <div class="modal-sheet-inner" style="display:flex;flex-direction:column;height:70vh">
+    <div class="modal-handle"></div>
+    <div class="modal-title" id="docChatTitle" style="font-family:var(--font-head)">Discussion</div>
+    <div id="docChatMessages" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;gap:8px;padding:4px 0"></div>
+    <div style="display:flex;gap:8px;margin-top:10px">
+      <input type="text" id="docChatInput" class="auth-input" placeholder="Écrire un message…" onkeydown="if(event.key==='Enter')sendDocChatMsg()">
+      <button class="btn-icon" style="width:44px;height:44px" onclick="sendDocChatMsg()"><i class="ti ti-send"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- TAB COACHING -->
+<div class="tab-content" id="tab-coaching">
+  <div id="coaching-setup" style="display:flex;flex-direction:column">
+    <div class="setup-page" id="setup-container">
+      <div class="setup-progress">
+        <div class="setup-dot done" id="dot-0"></div>
+        <div class="setup-dot" id="dot-1"></div>
+        <div class="setup-dot" id="dot-2"></div>
+      </div>
+      <div class="setup-step active" id="setup-step-0">
+        <div>
+          <div class="setup-label">Étape 1 / 3</div>
+          <div class="setup-title">Bienvenue ! 👋</div>
+          <div class="setup-sub" style="margin-top:8px">Commençons par te connaître. Ces infos m'aideront à personnaliser ton coaching.</div>
+        </div>
+        <div><div class="setup-label" style="margin-top:8px">Ton prénom</div><input type="text" class="setup-input" id="setup-name" placeholder="ex. Oumar"></div>
+        <div><div class="setup-label">Ton objectif</div><input type="text" class="setup-input" id="setup-goal" placeholder="ex. Décrocher mon diplôme d'ingénieur"></div>
+        <div><div class="setup-label">Ton niveau / Filière</div><input type="text" class="setup-input" id="setup-level" placeholder="ex. 3e année Génie Électrique"></div>
+        <button class="btn-primary" onclick="setupNext(0)">Continuer <i class="ti ti-arrow-right"></i></button>
+      </div>
+      <div class="setup-step" id="setup-step-1">
+        <div>
+          <div class="setup-label">Étape 2 / 3</div>
+          <div class="setup-title">Tes matières 📚</div>
+          <div class="setup-sub" style="margin-top:8px">Ajoute chaque matière avec son nombre de crédits ECTS.</div>
+        </div>
+        <div class="add-subject-row">
+          <input type="text" class="setup-input" id="new-subject-name" placeholder="Nom de la matière">
+          <input type="number" class="credit-input" id="new-subject-credits" placeholder="Cr." min="1" max="10">
+          <div onclick="addSubject()" style="width:42px;height:42px;background:var(--teal);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;box-shadow:0 0 12px var(--teal-glow);transition:transform .2s" onmouseover="this.style.transform='scale(1.1)'" onmouseout="this.style.transform=''">
+            <i class="ti ti-plus" style="font-size:20px;color:#0A0F14"></i>
+          </div>
+        </div>
+        <div class="subject-list" id="subject-list"></div>
+        <button class="btn-primary" onclick="setupNext(1)">Continuer <i class="ti ti-arrow-right"></i></button>
+        <button class="btn-secondary" onclick="setupBack(1)"><i class="ti ti-arrow-left"></i> Retour</button>
+      </div>
+      <div class="setup-step" id="setup-step-2">
+        <div>
+          <div class="setup-label">Étape 3 / 3</div>
+          <div class="setup-title">Tout est prêt ! 🎯</div>
+          <div class="setup-sub" style="margin-top:8px">Chaque début de semaine, mets à jour tes prochains examens pour recevoir des conseils de révision adaptés.</div>
+        </div>
+        <div id="setup-summary" style="background:var(--glass);border-radius:14px;padding:16px;border:1px solid var(--brd)"></div>
+        <button class="btn-primary" onclick="finishSetup()" style="background:linear-gradient(135deg,var(--teal),var(--green));box-shadow:0 4px 20px rgba(34,197,94,.35)"><i class="ti ti-check"></i> Démarrer mon coaching</button>
+        <button class="btn-secondary" onclick="setupBack(2)"><i class="ti ti-arrow-left"></i> Modifier</button>
+      </div>
+    </div>
+  </div>
+  <div id="coaching-dashboard" style="display:none;flex-direction:column;gap:0">
+    <div class="coach-header">
+      <div class="coach-greeting" id="coach-greeting">Bonjour ! 👋</div>
+      <div class="coach-sub" id="coach-sub">Voici ton planning de révision</div>
+    </div>
+    <div class="coaching-scroll" id="coaching-main-scroll">
+      <div class="weekly-update-btn" onclick="openWeeklyModal()">
+        <div class="weekly-icon"><i class="ti ti-calendar-event"></i></div>
+        <div class="weekly-text">
+          <div class="weekly-title">Mettre à jour mes examens</div>
+          <div class="weekly-sub">Saisir les dates de la semaine</div>
+        </div>
+        <i class="ti ti-chevron-right" style="font-size:18px;color:var(--txt2)"></i>
+      </div>
+      <div class="deadline-section">
+        <div class="deadline-title">Prochains examens</div>
+        <div id="deadlineCards"><div class="no-exams"><i class="ti ti-calendar-x"></i><p>Aucun examen renseigné</p><span>Clique sur "Mettre à jour mes examens"</span></div></div>
+      </div>
+      <div class="subjects-grid" id="subjectsGrid"></div>
+      <div class="reset-coaching-btn" onclick="resetCoaching()">
+        <i class="ti ti-refresh"></i><span>Réinitialiser le coaching</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /content -->
+
+<!-- BOTTOM NAV -->
+<nav class="bottomnav">
+  <button class="nav-item active" onclick="switchTab('constantes',this)"><i class="ti ti-activity"></i>Constantes</button>
+  <button class="nav-item" onclick="switchTab('carnet',this)"><i class="ti ti-notebook"></i>Carnet</button>
+  <button class="nav-item" onclick="switchTab('alertes',this)" id="alertNavBtn"><i class="ti ti-bell"></i>Alertes</button>
+  <button class="nav-item" onclick="switchTab('chatbot',this)"><i class="ti ti-message-chatbot"></i>Assistant</button>
+  <button class="nav-item" onclick="switchTab('pharma',this)"><i class="ti ti-building-hospital"></i>Pharmacies</button>
+  <button class="nav-item" onclick="switchTab('docs',this)"><i class="ti ti-stethoscope"></i>Médecins</button>
+</nav>
+</div><!-- /mainAppScreen -->
+
+<!-- MODAL SAISIE CONSTANTE -->
+<div class="modal-overlay" id="addModal" style="display:none" onclick="closeModal(event)">
+  <div class="modal-sheet">
+    <div class="modal-handle"></div>
+    <div class="modal-title">Saisir une constante</div>
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="field"><label>Type de mesure</label>
+        <select id="vitalType" onchange="updateVitalUnit()">
+          <option value="ta">Tension artérielle (TA)</option>
+          <option value="glycemie">Glycémie (g/L)</option>
+          <option value="poids">Poids (kg)</option>
+          <option value="spo2">SpO2 (%)</option>
+          <option value="pouls">Pouls (bpm)</option>
+          <option value="temperature">Température (°C)</option>
+        </select>
+      </div>
+      <div class="row2" id="taFields">
+        <div class="field"><label>Systolique (mmHg)</label><input type="number" id="vSys" placeholder="120"/></div>
+        <div class="field"><label>Diastolique (mmHg)</label><input type="number" id="vDia" placeholder="80"/></div>
+      </div>
+      <div class="field" id="singleField" style="display:none">
+        <label id="singleLabel">Valeur</label>
+        <input type="number" id="vSingle" step="0.1"/>
+      </div>
+      <div class="row2">
+        <div class="field"><label>Date</label><input type="date" id="vDate"/></div>
+        <div class="field"><label>Heure</label><input type="time" id="vTime"/></div>
+      </div>
+      <div class="field"><label>Note (optionnel)</label><input type="text" id="vNote" placeholder="ex: après repas, à jeun…"/></div>
+      <button class="btn-primary" onclick="saveVital()"><i class="ti ti-device-floppy"></i>Enregistrer</button>
+    </div>
+  </div>
+</div>
+
+<!-- WEEKLY MODAL -->
+<div class="modal-overlay hidden" id="weeklyModal">
+  <div class="modal-sheet-inner">
+    <div class="modal-handle"></div>
+    <div class="modal-title" style="font-family:var(--font-head)">Examens de la semaine</div>
+    <div style="font-size:13px;color:var(--txt2);margin-bottom:16px;line-height:1.5">Saisis tes prochains examens pour recevoir des conseils personnalisés.</div>
+    <div id="exam-entries"></div>
+    <div class="add-exam-btn" onclick="addExamEntry()"><i class="ti ti-plus"></i>Ajouter un examen</div>
+    <button class="btn-primary" onclick="saveWeeklyUpdate()"><i class="ti ti-check"></i>Enregistrer</button>
+    <button class="btn-secondary" style="margin-top:8px" onclick="closeWeeklyModal()">Annuler</button>
+  </div>
+</div>
+
+<script>
+/* THEME */
+function toggleTheme(){
+  const isLight=document.body.getAttribute('data-theme')==='light';
+  if(isLight){document.body.removeAttribute('data-theme');localStorage.setItem('cc_theme','dark');}
+  else{document.body.setAttribute('data-theme','light');localStorage.setItem('cc_theme','light');}
+}
+(function(){const t=localStorage.getItem('cc_theme');if(t==='light')document.body.setAttribute('data-theme','light');})();
+
+/* LS */
+const LS={
+  get:k=>{try{return JSON.parse(localStorage.getItem('cc_'+k));}catch(e){return null;}},
+  set:(k,v)=>localStorage.setItem('cc_'+k,JSON.stringify(v)),
+};
+
+const DEFAULT_PROFILE={name:'Mon Profil',path:'diabete',blood:'A+',allergies:'',dob:'',avatar:'M',age:'',sexe:'',stade:''};
+const DEFAULT_THRESHOLDS={ta_sys:140,ta_dia:90,glycemie:1.8,spo2:94,pouls:100,temperature:38.5};
+const VITAL_META={
+  ta:          {label:'Tension',     icon:'ti-heart',       unit:'mmHg',keys:['ta_sys','ta_dia'],color:'#FF4D6D'},
+  glycemie:    {label:'Glycémie',    icon:'ti-droplet',     unit:'g/L', keys:['glycemie'],       color:'#FFB830',decimals:2},
+  poids:       {label:'Poids',       icon:'ti-scale',       unit:'kg',  keys:['poids'],          color:'#3B9EFF',decimals:1},
+  spo2:        {label:'SpO2',        icon:'ti-lung',        unit:'%',   keys:['spo2'],           color:'#A855F7'},
+  pouls:       {label:'Pouls',       icon:'ti-wave-sine',   unit:'bpm', keys:['pouls'],          color:'#EC4899'},
+  temperature: {label:'Température', icon:'ti-temperature', unit:'°C',  keys:['temperature'],    color:'#F97316',decimals:1},
+};
+const PATH_LABELS={diabete:'Diabète type 2',hta:'Hypertension',asthme:'Asthme',cardio:'Insuff. cardiaque',rein:'IRC (Rein)',multi:'Poly-pathologie'};
+
+const DOCTORS_DB_DEFAULT=[
+  {id:1,name:'Dr. Aminata Ouédraogo',spec:'cardio',specLabel:'Cardiologue',addr:'Clinique du Cœur, Secteur 4 — Ouagadougou',tel:'+226 25 36 xx xx',dispo:"Disponible aujourd'hui",dispoColor:'#00E5C5',avatar:'AO',horaires:'Lun–Ven 8h–17h',distance:'1.2 km',isTreating:false},
+  {id:2,name:'Dr. Ibrahim Sawadogo',spec:'endocrino',specLabel:'Diabétologue',addr:'CHU Yalgado, Bâtiment D — Ouagadougou',tel:'+226 25 33 xx xx',dispo:'Prochain RDV : jeudi',dispoColor:'#FFB830',avatar:'IS',horaires:'Mar & Jeu 9h–13h',distance:'3.5 km',isTreating:false},
+  {id:3,name:'Dr. Fatou Diallo',spec:'generaliste',specLabel:'Médecin Traitant',addr:'Cabinet Santé Plus, Secteur 11',tel:'+226 70 xx xx xx',dispo:"Disponible aujourd'hui",dispoColor:'#00E5C5',avatar:'FD',horaires:'Lun–Sam 7h30–18h',distance:'0.8 km',isTreating:true},
+  {id:4,name:'Dr. Pascal Kaboré',spec:'nephro',specLabel:'Néphrologue',addr:'Clinique Suka, Secteur 15',tel:'+226 25 41 xx xx',dispo:'Absent — urgences uniquement',dispoColor:'#FF4D6D',avatar:'PK',horaires:'Mer & Ven 10h–14h',distance:'5.1 km',isTreating:false},
+  {id:5,name:'Dr. Sylvie Compaoré',spec:'pneumo',specLabel:'Pneumologue',addr:'Centre Médical Protestant, Pissy',tel:'+226 25 38 xx xx',dispo:'Disponible demain',dispoColor:'#3B9EFF',avatar:'SC',horaires:'Lun–Ven 8h–16h',distance:'2.7 km',isTreating:false},
+];
+let DOCTORS_DB = LS.get('doctors') || [...DOCTORS_DB_DEFAULT];
+const SPEC_LABELS={
+  cardio:'Cardiologue', endocrino:'Diabétologue', pneumo:'Pneumologue', nephro:'Néphrologue',
+  generaliste:'Médecin généraliste', urgentiste:'Urgentiste',
+  infectio:'Infectiologue', hepato:'Hépato-gastro-entérologue', dermato:'Dermatologue',
+  hemato:'Hématologue', allergo:'Allergologue', psychiatre:'Psychiatre'
+};
+
+const PHARMAS_DB=[
+  {name:'Pharmacie Rachel Yagma',addr:'YAGMA, Côté Est du Sanctuaire marial, voie YAGMA-KAMBOINSIN',tel:'25407009',garde:true,lat:12.4386,lon:-1.60114},
+  {name:'Pharmacie Elite',addr:'Avenue Yennega, route de Yagma',tel:'25419177',garde:true,lat:12.3985,lon:-1.61269},
+  {name:'Pharmacie Tenedia',addr:'Kamboinsin, après le 2iE en allant vers Pabré',tel:'63930019',garde:true,lat:12.4649,lon:-1.55515},
+  {name:'Pharmacie Barkwendé',addr:'Arrdt 8, Sect 35, face à la cité de Rimkièta',tel:'25408590',garde:true,lat:12.3737,lon:-1.60851},
+  {name:'Pharmacie Baowendsom',addr:"Tampouy, nouveau goudron du collège Notre Dame de l'Espérance",tel:'25414499',garde:true,lat:12.4034,lon:-1.57745},
+  {name:'Pharmacie Crystal',addr:"Kossoghin, face à la Mairie de l'Arrdt 9",tel:'60460808',garde:true,lat:12.4202,lon:-1.55943},
+  {name:'Pharmacie Pelega',addr:'Kilwin, Arrdt 3, Av. du Yatenga',tel:'25350501',garde:true,lat:12.3888,lon:-1.57043},
+  {name:'Pharmacie Tale',addr:'Route de Bobo, entre stations Total & Shell',tel:'71620808',garde:true,lat:12.3333,lon:-1.60532},
+  {name:'Pharmacie Monderou',addr:'Nonsin, face station OTAM, rue Karamogo',tel:'25340528',garde:true,lat:12.3761,lon:-1.56373},
+  {name:'Pharmacie Lanibougma',addr:'Tanghin, quartier Nonghin, non loin de la Station Radar',tel:'25480797',garde:true,lat:12.4157,lon:-1.52381},
+  {name:'Pharmacie Wend La Mita',addr:"Sect 8, avenue du Yatenga, face école Kologh-Naba",tel:'25341587',garde:true,lat:12.3807,lon:-1.54997},
+  {name:'Pharmacie Wend La Lafi',addr:'Pissy, Route de Bobo, face station Shell de Pissy',tel:'25431213',garde:true,lat:12.3423,lon:-1.57282},
+  {name:'Pharmacie Maré',addr:'Gounghin, non loin du Stade du 4 Août',tel:'',garde:true,lat:12.3668,lon:-1.55061},
+  {name:'Pharmacie Desa',addr:"Tanghin, non loin de l'Hôtel Ricardo",tel:'25475050',garde:true,lat:12.3914,lon:-1.52927},
+  {name:'Pharmacie Rivage',addr:"Av. du Kadiogo, 200m Est de l'échangeur Ouest",tel:'25341939',garde:true,lat:12.3541,lon:-1.55213},
+  {name:'Pharmacie Rayib-Tiga',addr:'Av. Jean-Baptiste Ouédraogo, 800m Nord Clinique Notre-Dame-de-la-Paix',tel:'65321153',garde:true,lat:12.4074,lon:-1.5077},
+  {name:'Pharmacie Liberté',addr:'Dapoya, 60m station Shell cité An III',tel:'25410131',garde:true,lat:12.3777,lon:-1.53159},
+  {name:'Pharmacie Carrefour',addr:'Avenue Kadiogo, Bilbalogo',tel:'25332310',garde:true,lat:12.3679,lon:-1.53092},
+  {name:'Pharmacie Vénégré',addr:'Pissy',tel:'25430587',garde:true,lat:12.3345,lon:-1.55753},
+];
+
+const OFFLINE_KB=[
+  {kw:['tension','ta','pression','systolique','diastolique','hypertension'],resp:'Votre tension artérielle est mesurée en deux valeurs :\n\n• **Systolique** (1er chiffre) : pression lors du battement — normale < 130 mmHg\n• **Diastolique** (2e chiffre) : pression au repos — normale < 85 mmHg\n\nUne tension > 140/90 nécessite un contact avec votre médecin traitant.'},
+  {kw:['glycemie','sucre','diabete','hypoglycemie','hyperglycemie','insuline'],resp:"La glycémie normale à jeun est entre 0.7 et 1.1 g/L.\n\n• < 0.7 g/L : hypoglycémie — sucre rapide immédiatement\n• 1.1–1.26 g/L : pré-diabète — surveillance renforcée\n• > 1.26 g/L à jeun : diabète — suivi médical\n\nEn cas de malaise, ne restez pas seul."},
+  {kw:['spo2','saturation','oxygene','respiration','essoufflement'],resp:"La SpO2 normale est entre 95% et 100%.\n\n• 94–95% : surveillance rapprochée — limitez l'effort\n• < 94% : consultez rapidement ou appelez le 112\n• < 90% : urgence médicale"},
+  {kw:['medicament','traitement','pilule','comprimes','quand','prendre','oublie'],resp:'Pour vos médicaments :\n\n• **Oubli < 12h** : prenez la dose oubliée dès que possible\n• **Oubli > 12h** : sautez la dose et reprenez normalement le lendemain\n• Ne doublez jamais une dose'},
+  {kw:['poids','obesite','imc','maigrir','regime'],resp:"Le suivi du poids est important dans plusieurs pathologies :\n\n• Prise de > 2 kg en 48h → signe possible de rétention d'eau (insuffisance cardiaque)\n• Variations brutales → à signaler à votre médecin\n\nPesez-vous le matin à jeun, dans les mêmes conditions."},
+];
+
+/* ÉTAT */
+let profile    = LS.get('profile')    || {...DEFAULT_PROFILE};
+let thresholds = LS.get('thresholds') || {...DEFAULT_THRESHOLDS};
+let vitals     = LS.get('vitals')     || [];
+let meds       = LS.get('meds')       || [];
+let chatOnline = true;
+
+/* NAVIGATION */
+function switchTab(name,btn){
+  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.add('active');
+  btn.classList.add('active');
+  if(name==='pharma')  loadPharmas();
+  if(name==='docs')    renderDocs();
+  if(name==='carnet'){loadProfileForm();renderExamPhotos();}
+  if(name==='alertes') renderAlerts();
+  if(name==='coaching')initCoaching();
+}
+
+/* PROFIL */
+function saveProfile(){
+  profile.name      = document.getElementById('patName').value||'Mon Profil';
+  profile.path      = document.getElementById('patPath').value;
+  profile.blood     = document.getElementById('patBlood').value;
+  profile.allergies = document.getElementById('patAllergies').value;
+  profile.dob       = document.getElementById('patDOB').value;
+  profile.stade     = document.getElementById('patStade')?.value || profile.stade || '';
+  profile.avatar    = profile.name.charAt(0).toUpperCase();
+  LS.set('profile',profile); updateTopbar(); alert('Profil enregistré ✓');
+}
+function loadProfileForm(){
+  document.getElementById('patName').value      = profile.name||'';
+  document.getElementById('patPath').value      = profile.path||'';
+  document.getElementById('patBlood').value     = profile.blood||'A+';
+  document.getElementById('patAllergies').value = profile.allergies||'';
+  document.getElementById('patDOB').value       = profile.dob||'';
+  if (document.getElementById('patStade')) document.getElementById('patStade').value = profile.stade||'';
+}
+/* PHOTOS D'EXAMENS — conservées localement sur l'appareil
+   ⚠ Prototype : stockage en base64 dans localStorage (limité en taille).
+   En production (Capacitor), utiliser le plugin @capacitor/filesystem pour
+   sauvegarder les vraies images sur le stockage du téléphone. */
+let examPhotos = LS.get('examPhotos') || [];
+function addExamPhotos(evt){
+  const files = Array.from(evt.target.files || []);
+  files.forEach(file=>{
+    const reader = new FileReader();
+    reader.onload = e => {
+      examPhotos.push({id:'ph-'+Date.now()+Math.random().toString(36).slice(2),data:e.target.result,date:new Date().toLocaleDateString('fr-FR')});
+      LS.set('examPhotos', examPhotos);
+      renderExamPhotos();
+    };
+    reader.readAsDataURL(file);
+  });
+  evt.target.value = '';
+}
+function deleteExamPhoto(id){
+  examPhotos = examPhotos.filter(p=>p.id!==id);
+  LS.set('examPhotos', examPhotos);
+  renderExamPhotos();
+}
+function renderExamPhotos(){
+  const grid = document.getElementById('examPhotoGrid');
+  if(!grid) return;
+  if(!examPhotos.length){
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:14px;color:var(--txt2);font-size:12px">Aucune photo enregistrée</div>`;
+    return;
+  }
+  grid.innerHTML = examPhotos.map(p=>`
+    <div style="position:relative;aspect-ratio:1;border-radius:10px;overflow:hidden;border:1px solid var(--brd)">
+      <img src="${p.data}" style="width:100%;height:100%;object-fit:cover" onclick="window.open('${p.data}','_blank')">
+      <button class="btn-icon" style="position:absolute;top:3px;right:3px;width:22px;height:22px;background:rgba(0,0,0,.55);border:none" onclick="deleteExamPhoto('${p.id}')"><i class="ti ti-x" style="font-size:11px;color:#fff"></i></button>
+    </div>`).join('');
+}
+
+function updateTopbar(){
+  document.getElementById('topAvatar').textContent = profile.avatar||'M';
+  document.getElementById('topName').textContent   = profile.name||'Laafi-Connect';
+  document.getElementById('topPath').textContent   = PATH_LABELS[profile.path]||'Pathologie non définie';
+  const score=computeScore();
+  document.getElementById('topScore').textContent  = score===null?'--':score+'/10';
+}
+function computeScore(){
+  if(!vitals.length)return null;
+  const last={};
+  [...vitals].reverse().forEach(v=>{Object.entries(v.values).forEach(([k,val])=>{if(!last[k])last[k]=val;});});
+  let issues=0;
+  if(last.ta_sys   && last.ta_sys   > thresholds.ta_sys)   issues++;
+  if(last.glycemie && last.glycemie > thresholds.glycemie) issues++;
+  if(last.spo2     && last.spo2     < thresholds.spo2)     issues++;
+  if(last.pouls    && last.pouls    > thresholds.pouls)     issues++;
+  return Math.max(1,10-issues*2);
+}
+function showScoreDetail(){
+  const score=computeScore();
+  alert(score===null?'Aucune constante enregistrée. Commencez à saisir vos mesures.':`Score de forme : ${score}/10\n\nCalculé selon vos dernières constantes et vos seuils personnalisés.`);
+}
+
+/* CONSTANTES */
+function getLastVitals(){
+  const last={};
+  [...vitals].reverse().forEach(v=>{Object.entries(v.values).forEach(([k,val])=>{if(last[k]===undefined)last[k]={val,time:v.time,date:v.date};});});
+  return last;
+}
+function renderVitalGrid(){
+  const last=getLastVitals(),thr=thresholds;
+  const items=[
+    {type:'ta',          icon:'ti-heart',       label:'Tension',      val:last.ta_sys?`${last.ta_sys.val}/${last.ta_dia?.val||'--'}`:' -- ',  unit:'mmHg',time:last.ta_sys?.date||'',       status:!last.ta_sys?'ok':last.ta_sys.val>thr.ta_sys?'crit':'ok'},
+    {type:'glycemie',    icon:'ti-droplet',      label:'Glycémie',     val:last.glycemie?last.glycemie.val.toFixed(2):'--',                    unit:'g/L', time:last.glycemie?.date||'',     status:!last.glycemie?'ok':last.glycemie.val>thr.glycemie?'warn':'ok'},
+    {type:'poids',       icon:'ti-scale',        label:'Poids',        val:last.poids?last.poids.val.toFixed(1):'--',                          unit:'kg',  time:last.poids?.date||'',        status:'ok'},
+    {type:'spo2',        icon:'ti-lung',         label:'SpO2',         val:last.spo2?last.spo2.val:'--',                                       unit:'%',   time:last.spo2?.date||'',         status:!last.spo2?'ok':last.spo2.val<thr.spo2?'crit':'ok'},
+    {type:'pouls',       icon:'ti-wave-sine',    label:'Pouls',        val:last.pouls?last.pouls.val:'--',                                     unit:'bpm', time:last.pouls?.date||'',        status:!last.pouls?'ok':last.pouls.val>thr.pouls?'warn':'ok'},
+    {type:'temperature', icon:'ti-temperature',  label:'Température',  val:last.temperature?last.temperature.val.toFixed(1):'--',               unit:'°C',  time:last.temperature?.date||'',  status:!last.temperature?'ok':last.temperature.val>thr.temperature?'warn':'ok'},
+  ];
+  document.getElementById('vitalGrid').innerHTML=items.map((it,i)=>`
+    <div class="vital-card ${it.status}" onclick="openAddModal('${it.type}')" style="animation-delay:${i*60}ms">
+      <i class="ti ${it.icon} vital-icon"></i>
+      <div class="vital-val">${it.val}</div>
+      <div class="vital-unit">${it.unit}</div>
+      <div class="vital-name">${it.label}</div>
+      <div class="vital-time">${it.time||'Aucune mesure'}</div>
+    </div>`).join('');
+}
+function renderHistory(){
+  const list=document.getElementById('historyList');
+  if(!vitals.length){list.innerHTML='<div style="text-align:center;padding:20px;color:var(--txt2);font-size:13px">Aucune mesure enregistrée</div>';return;}
+  list.innerHTML=[...vitals].reverse().slice(0,20).map(v=>{
+    const m=VITAL_META[v.type]||{};
+    const valStr=v.type==='ta'?`${v.values.ta_sys}/${v.values.ta_dia} mmHg`:`${Object.values(v.values)[0]} ${m.unit||''}`;
+    return `<div class="timeline-item">
+      <div class="tl-dot-wrap">
+        <div class="tl-dot" style="background:${m.color||'var(--teal)'};color:${m.color||'var(--teal)'}"></div>
+        <div class="tl-line"></div>
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">${m.label||v.type} — ${valStr}</div>
+        ${v.note?`<div class="tl-sub">${esc(v.note)}</div>`:''}
+        <div class="tl-date">${v.date} à ${v.time}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function renderTrend(){
+  const key=document.getElementById('trendSelect').value;
+  const vals=vitals.filter(v=>v.values[key]!==undefined).slice(-7);
+  const svg=document.getElementById('sparkSvg'),lbl=document.getElementById('trendLabels');
+  if(!vals.length){svg.innerHTML='';lbl.innerHTML='';return;}
+  const nums=vals.map(v=>parseFloat(v.values[key]));
+  const minV=Math.min(...nums),maxV=Math.max(...nums),range=maxV-minV||1;
+  const W=320,H=56,pad=20;
+  const xs=vals.map((_,i)=>pad+i*((W-pad*2)/Math.max(vals.length-1,1)));
+  const ys=nums.map(n=>H-pad-((n-minV)/range)*(H-pad*2));
+  const path=xs.map((x,i)=>`${i===0?'M':'L'}${x.toFixed(1)},${ys[i].toFixed(1)}`).join(' ');
+  const area=path+` L${xs[xs.length-1]},${H} L${xs[0]},${H} Z`;
+  svg.innerHTML=`
+    <defs>
+      <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#00E5C5" stop-opacity=".4"/>
+        <stop offset="100%" stop-color="#00E5C5" stop-opacity="0"/>
+      </linearGradient>
+      <filter id="glow"><feGaussianBlur stdDeviation="2" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    </defs>
+    <path d="${area}" fill="url(#sg)"/>
+    <path d="${path}" fill="none" stroke="#00E5C5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    ${xs.map((x,i)=>`
+      <circle cx="${x.toFixed(1)}" cy="${ys[i].toFixed(1)}" r="4" fill="#00E5C5" filter="url(#glow)"/>
+      <text x="${x.toFixed(1)}" y="${(ys[i]-8).toFixed(1)}" font-size="9" fill="var(--txt2)" text-anchor="middle">${nums[i]}</text>
+    `).join('')}`;
+  lbl.innerHTML=vals.map(v=>`<span>${v.date.slice(5)}</span>`).join('');
+}
+
+/* MODAL */
+function openAddModal(type){
+  document.getElementById('addModal').style.display='flex';
+  const now=new Date();
+  document.getElementById('vDate').value=now.toISOString().split('T')[0];
+  document.getElementById('vTime').value=now.toTimeString().slice(0,5);
+  if(type)document.getElementById('vitalType').value=type;
+  updateVitalUnit();
+}
+function updateVitalUnit(){
+  const t=document.getElementById('vitalType').value;
+  document.getElementById('taFields').style.display   =t==='ta'?'grid':'none';
+  document.getElementById('singleField').style.display=t==='ta'?'none':'block';
+  const meta=VITAL_META[t]||{};
+  document.getElementById('singleLabel').textContent=`${meta.label||t} (${meta.unit||''})`;
+}
+function closeModal(e){if(e.target.id==='addModal')document.getElementById('addModal').style.display='none';}
+function saveVital(){
+  const type=document.getElementById('vitalType').value,date=document.getElementById('vDate').value,
+        time=document.getElementById('vTime').value,note=document.getElementById('vNote').value;
+  let values={};
+  if(type==='ta'){
+    const sys=parseFloat(document.getElementById('vSys').value),dia=parseFloat(document.getElementById('vDia').value);
+    if(!sys||!dia){alert('Entrez les deux valeurs de tension.');return;}
+    values={ta_sys:sys,ta_dia:dia};
+  } else {
+    const val=parseFloat(document.getElementById('vSingle').value);
+    if(isNaN(val)){alert('Entrez une valeur numérique.');return;}
+    values={[type]:val};
+  }
+  vitals.push({type,values,date,time,note});
+  LS.set('vitals',vitals);
+  document.getElementById('addModal').style.display='none';
+  document.getElementById('vNote').value='';
+  renderVitalGrid();renderHistory();renderTrend();renderAlerts();updateTopbar();
+}
+
+/* ALERTES */
+function saveThresholds(){
+  thresholds.ta_sys  =parseFloat(document.getElementById('thTA').value)||140;
+  thresholds.glycemie=parseFloat(document.getElementById('thGly').value)||1.8;
+  thresholds.spo2    =parseFloat(document.getElementById('thSpo2').value)||94;
+  thresholds.pouls   =parseFloat(document.getElementById('thPouls').value)||100;
+  LS.set('thresholds',thresholds);renderAlerts();renderVitalGrid();alert('Seuils enregistrés ✓');
+}
+function renderAlerts(){
+  const last=getLastVitals(),alerts=[];
+  if(last.ta_sys?.val>thresholds.ta_sys)
+    alerts.push({cls:'crit',icon:'ti-alert-triangle',col:'var(--red)',title:`Tension élevée — ${last.ta_sys.val}/${last.ta_dia?.val||'--'} mmHg`,desc:`Seuil : ${thresholds.ta_sys} mmHg. Contactez votre médecin si persistance > 2 mesures.`,time:last.ta_sys.date});
+  if(last.glycemie?.val>thresholds.glycemie)
+    alerts.push({cls:'warn',icon:'ti-droplet',col:'var(--amber)',title:`Glycémie élevée — ${last.glycemie.val.toFixed(2)} g/L`,desc:`Seuil : ${thresholds.glycemie} g/L. Vérifiez votre traitement et votre alimentation.`,time:last.glycemie.date});
+  if(last.spo2?.val<thresholds.spo2)
+    alerts.push({cls:'crit',icon:'ti-lung',col:'var(--red)',title:`SpO2 basse — ${last.spo2.val}%`,desc:`Seuil minimum : ${thresholds.spo2}%. Repos immédiat. Appelez le 112 si < 90%.`,time:last.spo2.date});
+  if(last.pouls?.val>thresholds.pouls)
+    alerts.push({cls:'warn',icon:'ti-wave-sine',col:'var(--amber)',title:`Pouls élevé — ${last.pouls.val} bpm`,desc:`Seuil : ${thresholds.pouls} bpm. Repos et hydratation. Consultez si persistance.`,time:last.pouls.date});
+  if(!alerts.length)
+    alerts.push({cls:'ok',icon:'ti-check',col:'var(--teal)',title:'Toutes les constantes sont dans les normes',desc:'Continuez le suivi régulier de vos mesures.',time:''});
+  const navBtn=document.getElementById('alertNavBtn');
+  const critCount=alerts.filter(a=>a.cls==='crit').length;
+  navBtn.innerHTML=`<i class="ti ti-bell"></i>Alertes${critCount?`<span style="position:absolute;top:6px;right:10px;width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 8px var(--red)"></span>`:''}`;
+  document.getElementById('alertsList').innerHTML=alerts.map(a=>`
+    <div class="alert-item alert-${a.cls}">
+      <i class="ti ${a.icon} alert-icon" style="color:${a.col}"></i>
+      <div>
+        <div class="alert-title">${a.title}</div>
+        <div class="alert-desc">${a.desc}</div>
+        ${a.time?`<div class="alert-time">${a.time}</div>`:''}
+      </div>
+    </div>`).join('');
+  renderMeds();
+}
+
+/* MEDS */
+function renderMeds(){
+  const list=document.getElementById('medsList');
+  if(!meds.length){list.innerHTML='<div style="font-size:12px;color:var(--txt2);padding:8px 0">Aucun médicament enregistré</div>';return;}
+  list.innerHTML=meds.map((m,mi)=>`
+    <div class="med-item">
+      <div class="med-icon"><i class="ti ti-pill" style="color:#fff;font-size:17px"></i></div>
+      <div style="flex:1">
+        <div class="med-name">${esc(m.name)}</div>
+        <div class="med-dose">${esc(m.dose)} · ${m.times.join(', ')}</div>
+      </div>
+      <div class="med-time">${m.times[0]||''}</div>
+      <div class="med-check ${m.checkedToday?'done':''}" onclick="toggleMed(${mi})">
+        ${m.checkedToday?'<i class="ti ti-check" style="font-size:12px;color:#0A0F14"></i>':''}
+      </div>
+    </div>`).join('');
+}
+function toggleMed(i){meds[i].checkedToday=!meds[i].checkedToday;LS.set('meds',meds);renderMeds();}
+function openAddMed(){
+  const name=prompt('Nom du médicament :');if(!name)return;
+  const dose=prompt('Dosage (ex: 500mg, 1 cp) :')||'';
+  const times=(prompt('Heure(s) de prise (ex: 08:00, 20:00) :')||'08:00').split(',').map(t=>t.trim());
+  meds.push({name,dose,times,checkedToday:false});LS.set('meds',meds);renderMeds();
+}
+
+/* CHATBOT */
+function switchChatMode(online){
+  chatOnline=online;
+  document.getElementById('chatModeBadge').textContent=online?'En ligne':'Hors-ligne';
+  document.getElementById('chatModeBadge').className='mode-badge '+(online?'online':'offline');
+  document.getElementById('chatModeInfo').textContent=online?'Analyse vos constantes · Conseils personnalisés via IA':'Base locale · Réponses hors-ligne';
+  appendSystem(online?'Mode IA en ligne activé':'Mode hors-ligne — base locale');
+}
+function insertChip(el){document.getElementById('chatInput').value=el.textContent;document.getElementById('chatInput').focus();}
+function appendSystem(txt){const d=document.createElement('div');d.className='msg msg-system';d.textContent=txt;document.getElementById('chatMessages').appendChild(d);scrollChat();}
+function appendRaw(html,cls){const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;document.getElementById('chatMessages').appendChild(d);scrollChat();return d;}
+function scrollChat(){const m=document.getElementById('chatMessages');m.scrollTop=m.scrollHeight;}
+function esc(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function markdownLite(t){return esc(t).replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');}
+
+async function sendChat(){
+  const input=document.getElementById('chatInput'),text=input.value.trim();
+  if(!text)return;
+  appendRaw(esc(text),'msg-user');input.value='';
+  const thinking=appendRaw('<span class="thinking-dots"><span></span><span></span><span></span></span>','msg-bot');
+  await new Promise(r=>setTimeout(r,chatOnline?900:300));
+  thinking.remove();
+  if(chatOnline){await repondreOnline(text);}else{repondreOffline(text);}
+}
+function repondreOffline(question){
+  const q=question.toLowerCase();
+  const entry=OFFLINE_KB.find(e=>e.kw.some(k=>q.includes(k)));
+  if(entry){
+    const d=appendRaw(markdownLite(entry.resp),'msg-bot');
+    const tag=document.createElement('div');tag.className='source-tag src-offline';tag.innerHTML='<i class="ti ti-database" style="font-size:10px"></i> Base locale';d.appendChild(tag);
+  } else {
+    appendRaw("Je n'ai pas trouvé de réponse dans ma base locale.<br><br>Activez le mode <strong>En ligne</strong> pour une réponse personnalisée via l'IA.",'msg-bot');
+  }
+}
+async function repondreOnline(question){
+  const last=getLastVitals();
+  const ctx=Object.entries(last).map(([k,v])=>`${k}: ${v.val}`).join(', ')||'aucune constante';
+  const patho=PATH_LABELS[profile.path]||'pathologie non renseignée';
+  try {
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,
+        system:`Tu es un assistant médical bienveillant pour un patient atteint de ${patho}. Dernières constantes : ${ctx}. Fournis des informations claires et rassurantes. Rappelle de consulter un médecin pour tout diagnostic. Max 3–4 phrases courtes. Réponds en français.`,
+        messages:[{role:'user',content:question}]})
+    });
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'Réponse indisponible.';
+    const d=appendRaw(markdownLite(reply),'msg-bot');
+    const tag=document.createElement('div');tag.className='source-tag src-online';tag.innerHTML='<i class="ti ti-brain" style="font-size:10px"></i> IA Claude';d.appendChild(tag);
+  } catch(e){
+    appendRaw("Impossible de joindre l'IA en ligne.<br>Basculez en mode <strong>Hors-ligne</strong> pour utiliser la base locale.",'msg-bot');
+  }
+}
+
+/* PHARMACIES */
+function haversine(lat1,lon1,lat2,lon2){
+  const R=6371,dLat=(lat2-lat1)*Math.PI/180,dLon=(lon2-lon1)*Math.PI/180;
+  const a=Math.sin(dLat/2)**2+Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+async function loadPharmas(){
+  document.getElementById('pharmaList').innerHTML=`<div style="display:flex;align-items:center;gap:12px;padding:24px 16px;color:var(--txt2);font-size:13px"><div class="spinner"></div>Localisation en cours…</div>`;
+  const pos=await new Promise(res=>navigator.geolocation.getCurrentPosition(res,()=>res(null),{timeout:5000})).catch(()=>null);
+  let db=PHARMAS_DB.map(p=>({...p,dist:''}));
+  if(pos){
+    const{latitude:uLat,longitude:uLon}=pos.coords;
+    document.getElementById('pharmaLoc').textContent='À proximité de vous';
+    db=db.map(p=>{const d=haversine(uLat,uLon,p.lat,p.lon);return{...p,dist:d<1?(d*1000).toFixed(0)+' m':d.toFixed(1)+' km',_d:d};}).sort((a,b)=>a._d-b._d);
+  } else {
+    document.getElementById('pharmaLoc').textContent='Ouagadougou — source : infossante.net';
+  }
+  const garde=db.filter(p=>p.garde),autres=db.filter(p=>!p.garde);
+  document.getElementById('pharmaList').innerHTML=`
+    <div class="card">
+      <div class="section-label">De garde (${garde.length}) · maj 23/05/2026</div>
+      ${garde.map(renderPharmaItem).join('')}
+    </div>
+    ${autres.length?`<div class="card"><div class="section-label">Autres pharmacies</div>${autres.map(renderPharmaItem).join('')}</div>`:''}`;
+}
+function renderPharmaItem(p){
+  return `<div class="pharma-item">
+    <div class="pharma-icon"><i class="ti ti-building-hospital" style="color:#fff;font-size:19px"></i></div>
+    <div style="flex:1;min-width:0">
+      <div class="pharma-name">${esc(p.name)}</div>
+      <div class="pharma-addr">${esc(p.addr)}</div>
+      <div class="pharma-meta">
+        <span class="badge ${p.garde?'badge-ok':'badge-blue'}">${p.garde?'De garde':'Non garde'}</span>
+        ${p.dist?`<span style="font-size:10px;color:var(--txt2)">${p.dist}</span>`:''}
+      </div>
+    </div>
+    <div class="pharma-actions">
+      ${p.tel?`<button class="btn-icon" onclick="callTel('${p.tel}')" title="Appeler"><i class="ti ti-phone"></i></button>`:''}
+      <button class="btn-icon" onclick="openMap(${p.lat},${p.lon})" title="Carte"><i class="ti ti-map-pin"></i></button>
+    </div>
+  </div>`;
+}
+function callTel(tel){window.location.href='tel:'+tel;}
+function openMap(lat,lon){window.open(`https://maps.google.com/?q=${lat},${lon}`,'_blank');}
+
+/* SOS / URGENCE */
+function openSosModal(){document.getElementById('sosModal').style.display='flex';}
+function closeSosModal(e){if(!e||e.target.id==='sosModal')document.getElementById('sosModal').style.display='none';}
+function confirmEmergencyCall(number,label){
+  closeSosModal();
+  if(confirm(`Voulez-vous vraiment appeler : ${label} ?\nNuméro : ${number}`)){
+    window.location.href='tel:'+number;
+  }
+}
+
+/* RESPIRATION */
+function showBreathingTips(){document.getElementById('breathModal').style.display='flex';}
+function closeGenericModal(e,id){if(!e||e.target.id===id)document.getElementById(id).style.display='none';}
+
+/* DÉFIS BIEN-ÊTRE — se réinitialisent chaque jour */
+const WELLNESS_CHALLENGES=[
+  {id:'walk',icon:'ti-walk',text:'Marcher 10 minutes dehors, même lentement'},
+  {id:'water',icon:'ti-droplet',text:'Boire un grand verre d\'eau au réveil'},
+  {id:'gratitude',icon:'ti-notebook',text:'Noter 3 choses positives de la journée'},
+  {id:'call',icon:'ti-phone-call',text:'Appeler ou écrire à un proche'},
+  {id:'screen',icon:'ti-device-mobile-off',text:'Couper les écrans 30 min avant de dormir'},
+  {id:'pause',icon:'ti-hourglass',text:'Faire une pause de 5 min sans téléphone'},
+  {id:'stretch',icon:'ti-yoga',text:'S\'étirer doucement au réveil'},
+];
+function showWellnessChallenges(){
+  const today=new Date().toDateString();
+  let state=LS.get('wellnessChallenges');
+  if(!state||state.date!==today){state={date:today,done:{}};LS.set('wellnessChallenges',state);}
+  renderChallenges();
+  document.getElementById('challengeModal').style.display='flex';
+}
+function renderChallenges(){
+  const state=LS.get('wellnessChallenges')||{date:new Date().toDateString(),done:{}};
+  document.getElementById('challengeList').innerHTML=WELLNESS_CHALLENGES.map(c=>{
+    const done=!!state.done[c.id];
+    return `<div class="doc-card" style="cursor:pointer" onclick="toggleChallenge('${c.id}')">
+      <div class="doc-avatar" style="background:${done?'var(--teal)':'var(--glass2)'};border:1px solid var(--brd2)"><i class="ti ${done?'ti-check':c.icon}"></i></div>
+      <div style="flex:1"><div class="doc-name" style="${done?'text-decoration:line-through;color:var(--txt2)':''}">${c.text}</div></div>
+    </div>`;
+  }).join('');
+}
+function toggleChallenge(id){
+  const today=new Date().toDateString();
+  let state=LS.get('wellnessChallenges');
+  if(!state||state.date!==today){state={date:today,done:{}};}
+  state.done[id]=!state.done[id];
+  LS.set('wellnessChallenges',state);
+  renderChallenges();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SONS APAISANTS — générés en direct avec la Web Audio API
+   (aucun fichier audio à héberger, fonctionne hors-ligne)
+═══════════════════════════════════════════════════════════════ */
+const SOUNDS=[
+  {id:'rain',label:'Pluie douce',icon:'ti-cloud-rain',badge:'badge-blue'},
+  {id:'brown',label:'Bruit brun (relaxant)',icon:'ti-wave-square',badge:'badge-purple'},
+  {id:'ocean',label:'Vagues de l\'océan',icon:'ti-wind',badge:'badge-teal'},
+  {id:'bowl',label:'Bol tibétain (drone calme)',icon:'ti-circle-dot',badge:'badge-amber'},
+];
+let audioCtx=null;
+let activeSounds={};
+function showSoundPlayer(){renderSoundList();document.getElementById('soundModal').style.display='flex';}
+function renderSoundList(){
+  document.getElementById('soundList').innerHTML=SOUNDS.map(s=>`
+    <div class="doc-card" style="cursor:pointer" onclick="toggleSound('${s.id}')">
+      <div class="icon-badge ${s.badge}"><i class="ti ${activeSounds[s.id]?'ti-player-pause':s.icon}"></i></div>
+      <div style="flex:1"><div class="doc-name">${s.label}</div><div class="doc-spec" style="color:var(--txt2);font-weight:500">${activeSounds[s.id]?'▶ En cours de lecture — toucher pour arrêter':'Toucher pour lancer'}</div></div>
+    </div>`).join('');
+}
+function ensureAudioCtx(){
+  if(!audioCtx) audioCtx=new (window.AudioContext||window.webkitAudioContext)();
+  if(audioCtx.state==='suspended') audioCtx.resume();
+  return audioCtx;
+}
+function makeNoiseBuffer(ctx){
+  const buffer=ctx.createBuffer(1,2*ctx.sampleRate,ctx.sampleRate);
+  const data=buffer.getChannelData(0);
+  for(let i=0;i<data.length;i++) data[i]=Math.random()*2-1;
+  return buffer;
+}
+function makeBrownBuffer(ctx){
+  const buffer=ctx.createBuffer(1,2*ctx.sampleRate,ctx.sampleRate);
+  const data=buffer.getChannelData(0);
+  let last=0;
+  for(let i=0;i<data.length;i++){
+    const white=Math.random()*2-1;
+    data[i]=(last+0.02*white)/1.02;
+    last=data[i];
+    data[i]*=3.5;
+  }
+  return buffer;
+}
+function toggleSound(id){
+  const ctx=ensureAudioCtx();
+  if(activeSounds[id]){
+    activeSounds[id].stop();
+    delete activeSounds[id];
+    renderSoundList();
+    return;
+  }
+  const masterGain=ctx.createGain();
+  masterGain.gain.value=(document.getElementById('soundVolume').value/100)*0.5;
+  masterGain.connect(ctx.destination);
+  let source,filter,lfo,lfoGain;
+  if(id==='rain'){
+    source=ctx.createBufferSource();source.buffer=makeNoiseBuffer(ctx);source.loop=true;
+    filter=ctx.createBiquadFilter();filter.type='bandpass';filter.frequency.value=3000;filter.Q.value=0.6;
+    source.connect(filter);filter.connect(masterGain);source.start();
+  }else if(id==='brown'){
+    source=ctx.createBufferSource();source.buffer=makeBrownBuffer(ctx);source.loop=true;
+    filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=500;
+    source.connect(filter);filter.connect(masterGain);source.start();
+  }else if(id==='ocean'){
+    source=ctx.createBufferSource();source.buffer=makeBrownBuffer(ctx);source.loop=true;
+    filter=ctx.createBiquadFilter();filter.type='lowpass';filter.frequency.value=800;
+    source.connect(filter);filter.connect(masterGain);
+    lfo=ctx.createOscillator();lfo.frequency.value=0.15;
+    lfoGain=ctx.createGain();lfoGain.gain.value=masterGain.gain.value*0.6;
+    lfo.connect(lfoGain);lfoGain.connect(masterGain.gain);
+    lfo.start();source.start();
+  }else if(id==='bowl'){
+    source=ctx.createOscillator();source.type='sine';source.frequency.value=136.1;
+    lfo=ctx.createOscillator();lfo.frequency.value=0.2;
+    lfoGain=ctx.createGain();lfoGain.gain.value=3;
+    lfo.connect(lfoGain);lfoGain.connect(source.frequency);
+    source.connect(masterGain);
+    lfo.start();source.start();
+  }
+  activeSounds[id]={
+    gain:masterGain,
+    stop(){try{source.stop();}catch(e){} if(lfo)try{lfo.stop();}catch(e){} masterGain.disconnect();}
+  };
+  renderSoundList();
+}
+function setSoundVolume(v){
+  Object.values(activeSounds).forEach(s=>{ if(s.gain) s.gain.gain.value=(v/100)*0.5; });
+}
+function stopAllSounds(){
+  Object.keys(activeSounds).forEach(id=>{activeSounds[id].stop();delete activeSounds[id];});
+}
+
+/* ══════════════════════════════════════════════════════════════
+   JOURNAL D'HUMEUR
+═══════════════════════════════════════════════════════════════ */
+const MOODS=[
+  {id:'great',emoji:'😄',label:'Très bien'},
+  {id:'good',emoji:'🙂',label:'Bien'},
+  {id:'okay',emoji:'😐',label:'Moyen'},
+  {id:'bad',emoji:'😕',label:'Difficile'},
+  {id:'awful',emoji:'😢',label:'Très dur'},
+];
+let _selectedMood=null;
+function showMoodJournal(){_selectedMood=null;renderMoodPicker();renderMoodHistory();document.getElementById('moodModal').style.display='flex';}
+function renderMoodPicker(){
+  document.getElementById('moodPicker').innerHTML=MOODS.map(m=>`
+    <div onclick="selectMood('${m.id}')" style="text-align:center;cursor:pointer;padding:8px 6px;border-radius:12px;border:2px solid ${_selectedMood===m.id?'var(--teal)':'transparent'};background:${_selectedMood===m.id?'var(--teal-dim)':'transparent'};transition:all .2s">
+      <div style="font-size:26px">${m.emoji}</div>
+      <div style="font-size:9px;color:var(--txt2);margin-top:3px;font-weight:600">${m.label}</div>
+    </div>`).join('');
+}
+function selectMood(id){_selectedMood=id;renderMoodPicker();}
+function saveMoodEntry(){
+  if(!_selectedMood){alert('Choisissez une humeur avant d\'enregistrer');return;}
+  let history=LS.get('moodHistory')||[];
+  const note=document.getElementById('moodNote').value.trim();
+  history.unshift({date:new Date().toLocaleDateString('fr-FR'),time:new Date().toLocaleTimeString('fr-FR',{hour:'2-digit',minute:'2-digit'}),mood:_selectedMood,note});
+  LS.set('moodHistory',history.slice(0,30));
+  document.getElementById('moodNote').value='';
+  _selectedMood=null;
+  renderMoodPicker();renderMoodHistory();
+  showToast('Humeur enregistrée ✓','ok');
+}
+function renderMoodHistory(){
+  const history=LS.get('moodHistory')||[];
+  const box=document.getElementById('moodHistory');
+  if(!history.length){box.innerHTML='<div style="text-align:center;color:var(--txt2);font-size:12px;padding:10px">Aucune entrée pour le moment</div>';return;}
+  box.innerHTML=history.map(h=>{
+    const m=MOODS.find(mm=>mm.id===h.mood)||{emoji:'❓'};
+    return `<div style="display:flex;gap:10px;align-items:center;background:var(--glass2);border:1px solid var(--brd);border-radius:12px;padding:8px 12px">
+      <div style="font-size:20px">${m.emoji}</div>
+      <div style="flex:1"><div style="font-size:11px;color:var(--txt2)">${h.date} · ${h.time}</div>${h.note?`<div style="font-size:12px;color:var(--txt);margin-top:2px">${esc(h.note)}</div>`:''}</div>
+    </div>`;
+  }).join('');
+}
+
+/* ══════════════════════════════════════════════════════════════
+   COMPRENDRE MA MALADIE — fiches pédagogiques
+═══════════════════════════════════════════════════════════════ */
+const DISEASE_GUIDES={
+  diabete:{icon:'ti-droplet-half-2',badge:'badge-blue',title:'Diabète de type 2',text:"Le corps régule mal le taux de sucre dans le sang. Bien suivi, on peut mener une vie tout à fait normale.",tips:["Surveillez votre glycémie comme indiqué par votre médecin","Privilégiez des repas réguliers, moins sucrés et moins gras","Marchez au moins 20 à 30 minutes par jour","Ne modifiez ni n'arrêtez jamais votre traitement seul(e)"]},
+  hta:{icon:'ti-heart-bolt',badge:'badge-red',title:'Hypertension artérielle',text:"La pression du sang dans les artères est trop élevée. Souvent silencieuse, elle se contrôle bien avec des habitudes adaptées.",tips:["Réduisez le sel dans vos plats","Prenez votre tension régulièrement","Marchez, bougez chaque jour si possible","Prenez votre traitement à heure fixe"]},
+  asthme:{icon:'ti-lungs',badge:'badge-teal',title:'Asthme',text:"Les voies respiratoires se resserrent par moments, provoquant essoufflement ou toux. Un bon suivi limite fortement les crises.",tips:["Gardez toujours votre inhalateur avec vous","Évitez la poussière, la fumée et les allergènes connus","Pratiquez la respiration abdominale au calme","Consultez rapidement en cas de gêne respiratoire importante"]},
+  cardio:{icon:'ti-heartbeat',badge:'badge-purple',title:'Insuffisance cardiaque',text:"Le cœur pompe le sang moins efficacement qu'avant. Un mode de vie adapté aide beaucoup à se sentir mieux au quotidien.",tips:["Pesez-vous régulièrement, une prise de poids rapide peut alerter","Limitez le sel et les excès de boisson","Reposez-vous dès que le besoin s'en fait sentir","Signalez tout essoufflement inhabituel à votre médecin"]},
+  rein:{icon:'ti-droplet',badge:'badge-amber',title:'Insuffisance rénale chronique (IRC)',text:"Les reins filtrent moins bien le sang. Adapter son alimentation et bien suivre son traitement ralentit son évolution.",tips:["Buvez la quantité d'eau recommandée par votre médecin, ni plus ni moins","Limitez le sel et certains aliments riches en potassium","Faites vos bilans sanguins régulièrement","Évitez l'automédication, y compris les anti-inflammatoires"]},
+  multi:{icon:'ti-heart-plus',badge:'badge-green',title:'Poly-pathologie (plusieurs maladies associées)',text:"Gérer plusieurs maladies en même temps demande de l'organisation, mais chaque petite habitude compte.",tips:["Gardez une liste à jour de tous vos traitements","Prévenez chaque médecin consulté des autres maladies suivies","Organisez vos prises de médicaments avec un pilulier","N'hésitez pas à poser vos questions à votre médecin traitant"]},
+};
+function showDiseaseGuides(){renderDiseaseList();document.getElementById('diseaseModal').style.display='flex';}
+function renderDiseaseList(){
+  document.getElementById('diseaseList').innerHTML=Object.values(DISEASE_GUIDES).map(d=>`
+    <div class="doc-card" style="align-items:flex-start">
+      <div class="icon-badge ${d.badge}"><i class="ti ${d.icon}"></i></div>
+      <div style="flex:1">
+        <div class="doc-name">${d.title}</div>
+        <div style="font-size:11.5px;color:var(--txt2);margin-top:3px;line-height:1.45">${d.text}</div>
+        <ul style="margin:8px 0 0 16px;padding:0">${d.tips.map(t=>`<li style="font-size:11px;color:var(--txt2);margin-bottom:3px;line-height:1.4">${t}</li>`).join('')}</ul>
+      </div>
+    </div>`).join('');
+}
+
+/* DÉCONNEXION */
+function logoutAccount(){
+  if(!confirm('Voulez-vous vraiment vous déconnecter ?'))return;
+  API.logout();
+  document.getElementById('mainAppScreen').style.display='none';
+  resetAuthViews();
+  showScreen('screen-choice');
+  showToast('Déconnecté', 'info');
+}
+
+/* SPÉCIALISTES */
+function renderDocs(){
+  const filter=document.getElementById('specFilter').value;
+  const treating=DOCTORS_DB.find(d=>d.isTreating);
+  document.getElementById('myDoctorCard').innerHTML=treating?renderDocCard(treating):'<div style="font-size:12px;color:var(--txt2)">Aucun médecin traitant enregistré.</div>';
+  const list=DOCTORS_DB.filter(d=>!d.isTreating&&(!filter||d.spec===filter));
+  document.getElementById('docsList').innerHTML=list.map(renderDocCard).join('');
+}
+function filterDocs(){renderDocs();}
+function renderDocCard(d){
+  return `<div class="doc-card">
+    <div class="doc-avatar">${d.avatar}</div>
+    <div style="flex:1;min-width:0">
+      <div class="doc-name">${esc(d.name)}</div>
+      <div class="doc-spec">${esc(d.specLabel)}</div>
+      <div class="doc-addr">${esc(d.addr)}</div>
+      <div class="doc-meta">
+        <div class="dispo-dot" style="background:${d.dispoColor};color:${d.dispoColor}"></div>
+        <span style="font-size:11px;color:var(--txt2)">${esc(d.dispo)}</span>
+        <span style="font-size:11px;color:var(--txt2)">· ${d.distance}</span>
+      </div>
+      <div class="doc-meta" style="margin-top:3px">
+        <i class="ti ti-clock" style="font-size:12px;color:var(--txt2)"></i>
+        <span style="font-size:11px;color:var(--txt2)">${esc(d.horaires)}</span>
+      </div>
+      <div class="doc-actions">
+        <button class="btn-icon" style="gap:4px;padding:0 10px;width:auto" onclick="callTel('${d.tel}')"><i class="ti ti-phone"></i><span style="font-size:11px">Appeler</span></button>
+        <button class="btn-icon" style="gap:4px;padding:0 10px;width:auto" onclick="openMap(0,0)"><i class="ti ti-map-pin"></i><span style="font-size:11px">Localiser</span></button>
+        <button class="btn-icon" style="gap:4px;padding:0 10px;width:auto" onclick="openDocChat(${d.id})"><i class="ti ti-message-circle-2"></i><span style="font-size:11px">Discuter</span></button>
+      </div>
+    </div>
+  </div>`;
+}
+
+/* AJOUT D'UN MÉDECIN */
+function openAddDocModal(){document.getElementById('addDocModal').style.display='flex';}
+function closeAddDocModal(e){if(!e||e.target.id==='addDocModal')document.getElementById('addDocModal').style.display='none';}
+function saveNewDoc(){
+  const name=document.getElementById('newDocName').value.trim();
+  const spec=document.getElementById('newDocSpec').value;
+  const tel=document.getElementById('newDocTel').value.trim();
+  const addr=document.getElementById('newDocAddr').value.trim();
+  if(!name){alert('Le nom du médecin est requis');return;}
+  const initials=name.replace(/^Dr\.?\s*/i,'').split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase()||'DR';
+  DOCTORS_DB.push({
+    id:Date.now(), name, spec, specLabel:SPEC_LABELS[spec]||spec,
+    addr:addr||'Adresse non renseignée', tel:tel||'', dispo:'Disponibilité non renseignée',
+    dispoColor:'#7A8A9A', avatar:initials, horaires:'—', distance:'—', isTreating:false
+  });
+  LS.set('doctors', DOCTORS_DB);
+  closeAddDocModal();
+  document.getElementById('newDocName').value='';document.getElementById('newDocTel').value='';document.getElementById('newDocAddr').value='';
+  renderDocs();
+  showToast('Médecin ajouté ✓','ok');
+}
+
+/* ESPACE DE DISCUSSION AVEC UN SPÉCIALISTE
+   ⚠ Prototype : messagerie simulée localement, stockée par médecin.
+   En production, ceci doit passer par le backend (WebSocket ou polling API). */
+let docChats = LS.get('docChats') || {};
+let _activeChatDocId = null;
+function openDocChat(docId){
+  _activeChatDocId = docId;
+  const doc = DOCTORS_DB.find(d=>d.id===docId);
+  document.getElementById('docChatTitle').textContent = 'Discussion — ' + (doc ? doc.name : '');
+  if(!docChats[docId]) docChats[docId] = [];
+  renderDocChat();
+  document.getElementById('docChatModal').style.display='flex';
+}
+function closeDocChat(e){if(!e||e.target.id==='docChatModal')document.getElementById('docChatModal').style.display='none';}
+function renderDocChat(){
+  const box=document.getElementById('docChatMessages');
+  const msgs=docChats[_activeChatDocId]||[];
+  box.innerHTML = msgs.length ? msgs.map(m=>`
+    <div style="align-self:${m.from==='me'?'flex-end':'flex-start'};max-width:80%;background:${m.from==='me'?'var(--teal-dim)':'var(--glass2)'};border:1px solid ${m.from==='me'?'rgba(79,161,121,.3)':'var(--brd)'};border-radius:12px;padding:8px 12px;font-size:12px;color:var(--txt)">${esc(m.text)}</div>
+  `).join('') : `<div style="text-align:center;color:var(--txt2);font-size:12px;padding:20px">Démarrez la conversation avec ce spécialiste.</div>`;
+  box.scrollTop = box.scrollHeight;
+}
+function sendDocChatMsg(){
+  const input=document.getElementById('docChatInput');
+  const text=input.value.trim();
+  if(!text)return;
+  docChats[_activeChatDocId] = docChats[_activeChatDocId]||[];
+  docChats[_activeChatDocId].push({from:'me',text});
+  input.value='';
+  renderDocChat();
+  LS.set('docChats',docChats);
+  setTimeout(()=>{
+    docChats[_activeChatDocId].push({from:'doc',text:"Merci pour votre message, votre médecin vous répondra dès que possible."});
+    LS.set('docChats',docChats);
+    renderDocChat();
+  },900);
+}
+
+/* COACHING */
+let coachProfile =LS.get('coachProfile')||null;
+let coachSubjects=LS.get('coachSubjects')||[];
+let coachExams   =LS.get('coachExams')||[];
+
+function initCoaching(){
+  if(coachProfile){showCoachingDashboard();}
+  else{document.getElementById('coaching-setup').style.display='flex';document.getElementById('coaching-dashboard').style.display='none';}
+}
+function setupNext(step){
+  if(step===0){
+    const name=document.getElementById('setup-name').value.trim();
+    if(!name){alert('Entre ton prénom.');return;}
+    coachProfile={name,goal:document.getElementById('setup-goal').value.trim(),level:document.getElementById('setup-level').value.trim()};
+  }
+  if(step===1&&coachSubjects.length===0){alert('Ajoute au moins une matière.');return;}
+  if(step===2){finishSetup();return;}
+  document.getElementById('setup-step-'+step).classList.remove('active');
+  document.getElementById('setup-step-'+(step+1)).classList.add('active');
+  document.getElementById('dot-'+(step+1)).classList.add('done');
+  if(step===1){
+    document.getElementById('setup-summary').innerHTML=`<p style="font-size:14px;font-weight:600;color:var(--txt)">${coachProfile.name}</p><p style="font-size:12px;color:var(--txt2);margin-top:4px">${coachProfile.level} · ${coachSubjects.length} matière(s)</p>`;
+  }
+}
+function setupBack(step){
+  document.getElementById('setup-step-'+step).classList.remove('active');
+  document.getElementById('setup-step-'+(step-1)).classList.add('active');
+  document.getElementById('dot-'+step).classList.remove('done');
+}
+function addSubject(){
+  const name=document.getElementById('new-subject-name').value.trim();
+  const credits=parseInt(document.getElementById('new-subject-credits').value)||3;
+  if(!name)return;
+  coachSubjects.push({name,credits});
+  document.getElementById('new-subject-name').value='';
+  document.getElementById('new-subject-credits').value='';
+  renderSubjectList();
+}
+function renderSubjectList(){
+  document.getElementById('subject-list').innerHTML=coachSubjects.map((s,i)=>`
+    <div class="subject-row">
+      <div class="subject-row-name">${esc(s.name)}</div>
+      <div class="credit-badge">${s.credits} cr.</div>
+      <button class="remove-btn" onclick="removeSubject(${i})"><i class="ti ti-x"></i></button>
+    </div>`).join('');
+}
+function removeSubject(i){coachSubjects.splice(i,1);renderSubjectList();}
+function finishSetup(){
+  LS.set('coachProfile',coachProfile);LS.set('coachSubjects',coachSubjects);
+  showCoachingDashboard();
+}
+function showCoachingDashboard(){
+  document.getElementById('coaching-setup').style.display='none';
+  document.getElementById('coaching-dashboard').style.display='flex';
+  document.getElementById('coach-greeting').textContent=`Bonjour, ${coachProfile?.name||''}! 👋`;
+  renderSubjectsGrid();renderDeadlines();
+}
+function renderSubjectsGrid(){
+  document.getElementById('subjectsGrid').innerHTML=coachSubjects.map(s=>`
+    <div class="subject-card">
+      <div class="subject-card-name">${esc(s.name)}</div>
+      <div class="subject-card-credits"><span>${s.credits}</span> crédits ECTS</div>
+    </div>`).join('');
+}
+function renderDeadlines(){
+  const today=new Date();
+  const cards=coachExams.map(e=>{
+    const d=new Date(e.date),diff=Math.ceil((d-today)/(1000*60*60*24));
+    const cls=diff<=2?'urgent':diff<=7?'soon':'ok';
+    const dayCls=diff<=2?'days-urgent':diff<=7?'days-soon':'days-ok';
+    return `<div class="deadline-card ${cls}">
+      <div class="deadline-top">
+        <div class="deadline-subject">${esc(e.subject)}</div>
+        <span class="deadline-days ${dayCls}">${diff<=0?"Aujourd'hui":diff===1?'Demain':`J-${diff}`}</span>
+      </div>
+      <div class="deadline-date">${new Date(e.date).toLocaleDateString('fr-FR',{weekday:'long',day:'numeric',month:'long'})}</div>
+      <div class="deadline-advice">💡 ${diff<=2?'Révision express : concentre-toi sur les formules clés et les exercices types.':diff<=7?'Planifie 1 session de révision par jour sur ce module.':'Bonne avance ! Commence par les chapitres les plus difficiles.'}</div>
+    </div>`;
+  });
+  document.getElementById('deadlineCards').innerHTML=cards.length?cards.join(''):`<div class="no-exams"><i class="ti ti-calendar-x"></i><p>Aucun examen renseigné</p><span>Clique sur "Mettre à jour mes examens"</span></div>`;
+}
+function openWeeklyModal(){
+  document.getElementById('weeklyModal').classList.remove('hidden');
+  document.getElementById('exam-entries').innerHTML='';
+  addExamEntry();
+}
+function closeWeeklyModal(){document.getElementById('weeklyModal').classList.add('hidden');}
+function addExamEntry(){
+  const id='exam-'+Date.now();
+  const div=document.createElement('div');div.className='exam-entry';div.id=id;
+  div.innerHTML=`<div class="exam-row">
+    <select class="exam-subject-select"><option value="">-- Matière --</option>${coachSubjects.map(s=>`<option>${esc(s.name)}</option>`).join('')}</select>
+    <input type="date" class="exam-date-input">
+    <button class="btn-icon" onclick="document.getElementById('${id}').remove()"><i class="ti ti-x"></i></button>
+  </div>`;
+  document.getElementById('exam-entries').appendChild(div);
+}
+function saveWeeklyUpdate(){
+  coachExams=[];
+  document.querySelectorAll('.exam-entry').forEach(e=>{
+    const subject=e.querySelector('select').value,date=e.querySelector('input').value;
+    if(subject&&date)coachExams.push({subject,date});
+  });
+  LS.set('coachExams',coachExams);closeWeeklyModal();renderDeadlines();
+}
+function resetCoaching(){
+  if(!confirm('Réinitialiser le coaching ?'))return;
+  coachProfile=null;coachSubjects=[];coachExams=[];
+  ['coachProfile','coachSubjects','coachExams'].forEach(k=>localStorage.removeItem('cc_'+k));
+  document.getElementById('coaching-setup').style.display='flex';
+  document.getElementById('coaching-dashboard').style.display='none';
+  document.getElementById('setup-step-0').classList.add('active');
+  document.getElementById('setup-step-1').classList.remove('active');
+  document.getElementById('setup-step-2').classList.remove('active');
+}
+
+/* INIT */
+(function init(){
+  updateTopbar();renderVitalGrid();renderTrend();renderAlerts();
+  document.getElementById('thTA').value    = thresholds.ta_sys;
+  document.getElementById('thGly').value   = thresholds.glycemie;
+  document.getElementById('thSpo2').value  = thresholds.spo2;
+  document.getElementById('thPouls').value = thresholds.pouls;
+  const lastReset=LS.get('lastReset'),today=new Date().toDateString();
+  if(lastReset!==today){meds.forEach(m=>m.checkedToday=false);LS.set('meds',meds);LS.set('lastReset',today);}
+})();
+</script>
+
+<script>
+/* ═══════════════════════════════════════════════════════════════
+   Laafi-Connect — API Layer (embedded)
+   Offline-first: every feature works without server.
+   When online: syncs data, uses Groq AI, loads DB pharmacies.
+═══════════════════════════════════════════════════════════════ */
+const API = (() => {
+  const BASE = (window.LAAFI_CONFIG && window.LAAFI_CONFIG.API_BASE_URL) || 'http://127.0.0.1:8000/api/v1';
+  let _token   = localStorage.getItem('cc_access_token')  || null;
+  let _refresh = localStorage.getItem('cc_refresh_token') || null;
+  let _online  = false;
+
+  async function _fetch(path, opts = {}, retry = true) {
+    const headers = {'Content-Type':'application/json', ...(opts.headers||{})};
+    if (_token) headers['Authorization'] = `Bearer ${_token}`;
+    try {
+      const res = await fetch(`${BASE}${path}`, {...opts, headers});
+      if (res.status === 401 && retry && _refresh) {
+        if (await _refreshAccess()) return _fetch(path, opts, false);
+        _clearSession(); return null;
+      }
+      return res;
+    } catch(_) { _online = false; return null; }
+  }
+
+  async function _refreshAccess() {
+    try {
+      const res = await fetch(`${BASE}/auth/refresh`, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({refresh_token: _refresh})
+      });
+      if (!res.ok) return false;
+      const d = await res.json();
+      _token = d.access_token;
+      localStorage.setItem('cc_access_token', _token);
+      return true;
+    } catch(_) { return false; }
+  }
+
+  async function _json(path, opts) {
+    const res = await _fetch(path, opts);
+    if (!res || !res.ok) return null;
+    return res.json();
+  }
+
+  function _clearSession() {
+    _token = _refresh = null;
+    ['cc_access_token','cc_refresh_token','cc_user_id'].forEach(k => localStorage.removeItem(k));
+  }
+
+  function _saveSession(d) {
+    _token   = d.access_token;
+    _refresh = d.refresh_token;
+    localStorage.setItem('cc_access_token',  _token);
+    localStorage.setItem('cc_refresh_token', _refresh);
+    localStorage.setItem('cc_user_id', String(d.user_id));
+    _online = true;
+  }
+
+  return {
+    get online()    { return _online; },
+    get loggedIn()  { return !!_token; },
+
+    async ping() {
+      try {
+        const healthUrl = (window.LAAFI_CONFIG && window.LAAFI_CONFIG.API_HEALTH_URL) || 'http://127.0.0.1:8000/health';
+        const res = await fetch(healthUrl, {signal: AbortSignal.timeout(2500)});
+        _online = res.ok;
+      } catch(_) { _online = false; }
+      return _online;
+    },
+
+    async register(email, password, fullName) {
+      const res = await _fetch('/auth/register', {method:'POST', body: JSON.stringify({email, password, full_name: fullName})});
+      if (!res?.ok) { const e = await res?.json().catch(()=>{}); throw new Error(e?.detail || 'Erreur inscription'); }
+      const d = await res.json(); _saveSession(d); return d;
+    },
+
+    async login(email, password) {
+      const res = await _fetch('/auth/login', {method:'POST', body: JSON.stringify({email, password})});
+      if (!res?.ok) { const e = await res?.json().catch(()=>{}); throw new Error(e?.detail || 'Identifiants invalides'); }
+      const d = await res.json(); _saveSession(d); return d;
+    },
+
+    async logout() {
+      if (_refresh) await _fetch('/auth/logout', {method:'POST', body: JSON.stringify({refresh_token: _refresh})}).catch(()=>{});
+      _clearSession();
+    },
+
+    syncVitals: (vitals) => _json('/vitals/sync', {method:'POST', body: JSON.stringify({vitals})}),
+
+    getPharmacies: (lat, lon) => {
+      const q = lat ? `?on_duty=true&lat=${lat}&lon=${lon}` : '?on_duty=true';
+      return _json(`/pharmacies${q}`);
+    },
+
+    getDoctors: (specialty) => _json(`/doctors${specialty ? `?specialty=${specialty}` : ''}`),
+
+    async chatAI(message, history, pathology, lastVitals) {
+      const res = await _fetch('/ai/chat', {method:'POST', body: JSON.stringify({
+        message, history: history||[], pathology: pathology||null, last_vitals: lastVitals||null
+      })});
+      if (!res?.ok) return null;
+      return res.json();
+    },
+
+    saveProfile: (data) => _json('/profile', {method:'PUT', body: JSON.stringify(data)}),
+    getProfile:  ()     => _json('/profile'),
+  };
+})();
+
+/* ══════════════════════════════════════════════════════════════
+   NAVIGATION ENTRE ÉCRANS (splash → choix → auth/s'informer → app)
+═══════════════════════════════════════════════════════════════ */
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+/* -- Splash : effet machine à écrire -- */
+(function initSplash() {
+  const text = "BIENVENUE SUR\nLAAFI-CONNECT";
+  const el = document.getElementById('splash-title');
+  let i = 0;
+  el.innerHTML = '<span id="splash-typed"></span><span class="cursor"></span>';
+  const typedEl = document.getElementById('splash-typed');
+  function type() {
+    if (i < text.length) {
+      const ch = text[i] === '\n' ? '<br>' : text[i];
+      typedEl.innerHTML += ch;
+      i++;
+      setTimeout(type, 65);
+    } else {
+      document.getElementById('splash-enter').classList.add('show');
+    }
+  }
+  setTimeout(type, 400);
+})();
+
+function goToChoice() { showScreen('screen-choice'); }
+function chooseInform() { showScreen('screen-inform'); }
+function chooseHealth() { showScreen('screen-auth'); showAuthTab('login'); }
+function chooseHealthFromInform() { showScreen('screen-auth'); showAuthTab('login'); }
+function backToChoiceFromInform() { showScreen('screen-choice'); }
+function backToChoiceFromAuth() { resetAuthViews(); showScreen('screen-choice'); }
+
+function resetAuthViews() {
+  document.querySelectorAll('.auth-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('auth-view-main').classList.add('active');
+}
+
+/* ── AUTH STATE ─────────────────────────────────────────────── */
+let _authMode = 'login';
+
+function showAuthTab(mode) {
+  _authMode = mode;
+  const showReg = mode === 'register';
+  document.getElementById('authName').style.display = showReg ? 'block' : 'none';
+  document.getElementById('authRegExtra').style.display = showReg ? 'grid' : 'none';
+  document.getElementById('authRegExtra2').style.display = showReg ? 'block' : 'none';
+  document.getElementById('authSubtitle').textContent = showReg
+    ? 'Créez votre compte Laafi-Connect' : 'Connectez-vous pour accéder à votre suivi';
+  document.getElementById('tabLogin').classList.toggle('active', !showReg);
+  document.getElementById('tabReg').classList.toggle('active', showReg);
+  document.getElementById('authError').textContent = '';
+}
+
+async function submitAuth() {
+  const email = document.getElementById('authEmail').value.trim();
+  const pass  = document.getElementById('authPass').value;
+  const name  = document.getElementById('authName').value.trim();
+  const errEl = document.getElementById('authError');
+  const btn   = document.getElementById('authSubmitBtn');
+  errEl.textContent = '';
+  if (!email || !pass) { errEl.textContent = 'Email et mot de passe requis'; return; }
+  if (_authMode === 'register' && (!name || pass.length < 8)) {
+    errEl.textContent = 'Nom requis, mot de passe 8 caractères minimum'; return;
+  }
+  btn.textContent = '…'; btn.disabled = true;
+  try {
+    if (_authMode === 'login') {
+      await API.login(email, pass);
+    } else {
+      await API.register(email, pass, name);
+      /* Enregistrement des infos médicales + question secrète (carnet + récupération identité) */
+      profile.name      = name;
+      profile.avatar     = name.charAt(0).toUpperCase();
+      profile.age        = document.getElementById('authAge').value;
+      profile.sexe       = document.getElementById('authSexe').value;
+      profile.path       = document.getElementById('authMaladie').value;
+      profile.stade      = document.getElementById('authStade').value;
+      profile.allergies  = document.getElementById('authAllergies').value;
+      LS.set('profile', profile);
+      LS.set('secQA', {
+        email,
+        question: document.getElementById('authSecQ').value.trim(),
+        answer: document.getElementById('authSecA').value.trim().toLowerCase()
+      });
+    }
+    enterMainApp();
+  } catch(e) {
+    errEl.textContent = e.message;
+  } finally {
+    btn.textContent = 'Continuer'; btn.disabled = false;
+  }
+}
+
+function skipAuth() {
+  showToast('Mode hors-ligne — données locales uniquement', 'info');
+  enterMainApp();
+}
+
+function enterMainApp() {
+  showScreen('screen-splash'); // les .screen sont retirés du flux, mainAppScreen prend le relais
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('mainAppScreen').style.display = 'flex';
+  onLoginSuccess();
+}
+
+/* ══════════════════════════════════════════════════════════════
+   MOT DE PASSE OUBLIÉ — vérification d'identité en 3 étapes
+   1) email  2) question secrète définie à l'inscription  3) nouveau mdp
+   ⚠ Prototype local : dans la vraie version, l'étape 2 doit être
+   remplacée/complétée par un code OTP envoyé par email/SMS via le backend.
+═══════════════════════════════════════════════════════════════ */
+let _fpEmail = '';
+
+function showForgotPassword() {
+  resetAuthViews();
+  document.getElementById('auth-view-main').classList.remove('active');
+  document.getElementById('auth-view-forgot1').classList.add('active');
+}
+
+function backToLogin() {
+  resetAuthViews();
+  showAuthTab('login');
+}
+
+function fpStepEmail() {
+  const email = document.getElementById('fpEmail').value.trim();
+  const errEl = document.getElementById('fpError1');
+  const secQA = LS.get('secQA');
+  if (!email) { errEl.textContent = 'Veuillez entrer votre email'; return; }
+  if (!secQA || secQA.email.toLowerCase() !== email.toLowerCase()) {
+    errEl.textContent = 'Aucun compte trouvé avec cet email sur cet appareil';
+    return;
+  }
+  _fpEmail = email;
+  document.getElementById('fpQuestionDisplay').textContent = 'Question : ' + (secQA.question || '—');
+  document.getElementById('auth-view-forgot1').classList.remove('active');
+  document.getElementById('auth-view-forgot2').classList.add('active');
+}
+
+function fpStepVerify() {
+  const answer = document.getElementById('fpAnswer').value.trim().toLowerCase();
+  const errEl = document.getElementById('fpError2');
+  const secQA = LS.get('secQA');
+  if (!answer || answer !== secQA.answer) {
+    errEl.textContent = 'Réponse incorrecte, veuillez réessayer';
+    return;
+  }
+  document.getElementById('auth-view-forgot2').classList.remove('active');
+  document.getElementById('auth-view-forgot3').classList.add('active');
+}
+
+function fpStepReset() {
+  const p1 = document.getElementById('fpNewPass').value;
+  const p2 = document.getElementById('fpNewPass2').value;
+  const errEl = document.getElementById('fpError3');
+  if (p1.length < 8) { errEl.textContent = 'Mot de passe : 8 caractères minimum'; return; }
+  if (p1 !== p2) { errEl.textContent = 'Les mots de passe ne correspondent pas'; return; }
+  /* En production : appel API POST /auth/reset-password (token vérifié côté serveur) */
+  showToast('Mot de passe réinitialisé ✓', 'ok');
+  backToLogin();
+  document.getElementById('authEmail').value = _fpEmail;
+}
+
+/* ── TOAST NOTIFICATIONS ────────────────────────────────────── */
+function showToast(msg, type = 'ok') {
+  const colors = {ok:'var(--teal)', warn:'var(--amber)', error:'var(--red)', info:'var(--blue)'};
+  const t = document.createElement('div');
+  t.style.cssText = `position:fixed;bottom:90px;left:50%;transform:translateX(-50%);
+    background:var(--bg2);border:1px solid ${colors[type]};border-radius:12px;
+    padding:10px 18px;font-size:12px;color:var(--txt);z-index:300;
+    box-shadow:0 4px 20px rgba(0,0,0,.4);animation:msgIn .3s ease;
+    white-space:nowrap;max-width:90vw;text-align:center`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 3000);
+}
+
+/* ── ONLINE STATUS BADGE ────────────────────────────────────── */
+function updateStatusBadge() {
+  const el = document.getElementById('topPath');
+  if (!el) return;
+  if (API.online && API.loggedIn) {
+    el.innerHTML = `<span style="color:var(--teal)">●</span> ${PATH_LABELS[profile.path]||'Connecté au serveur'}`;
+  } else if (API.online) {
+    el.innerHTML = `<span style="color:var(--amber)">●</span> Serveur en ligne — non connecté`;
+  } else {
+    el.innerHTML = `<span style="color:var(--txt3)">●</span> ${PATH_LABELS[profile.path]||'Mode hors-ligne'}`;
+  }
+}
+
+/* ── ON LOGIN ───────────────────────────────────────────────── */
+async function onLoginSuccess() {
+  showToast('Connecté ✓ — synchronisation en cours…', 'ok');
+  updateStatusBadge();
+
+  // Sync local vitals → server
+  const localVitals = LS.get('vitals') || [];
+  if (localVitals.length) {
+    const result = await API.syncVitals(localVitals);
+    if (result) showToast(`${result.synced} mesure(s) synchronisée(s)`, 'ok');
+  }
+
+  // Sync profile → server
+  if (profile.name && profile.name !== 'Mon Profil') {
+    await API.saveProfile({
+      name: profile.name,
+      pathology: profile.path,
+      blood_group: profile.blood,
+      allergies: profile.allergies,
+      dob: profile.dob,
+      avatar: profile.avatar,
+    });
+  }
+
+  updateTopbar();
+}
+
+/* ── OVERRIDE: PHARMACIES from DB when online ───────────────── */
+const _localLoadPharmas = loadPharmas;
+loadPharmas = async function() {
+  if (!API.online) { _localLoadPharmas(); return; }
+  document.getElementById('pharmaList').innerHTML =
+    `<div style="display:flex;align-items:center;gap:12px;padding:24px 16px;color:var(--txt2);font-size:13px"><div class="spinner"></div>Chargement depuis le serveur…</div>`;
+
+  const pos = await new Promise(res =>
+    navigator.geolocation.getCurrentPosition(res, () => res(null), {timeout: 4000})
+  ).catch(() => null);
+
+  const lat = pos?.coords.latitude, lon = pos?.coords.longitude;
+  document.getElementById('pharmaLoc').textContent = lat ? 'À proximité de vous' : 'Ouagadougou';
+
+  const data = await API.getPharmacies(lat, lon);
+  if (!data) { _localLoadPharmas(); return; }
+
+  document.getElementById('pharmaList').innerHTML = `
+    <div class="card">
+      <div class="section-label">De garde (${data.length}) — source : base de données</div>
+      ${data.map(p => `
+        <div class="pharma-item">
+          <div class="pharma-icon"><i class="ti ti-building-hospital" style="color:#fff;font-size:19px"></i></div>
+          <div style="flex:1;min-width:0">
+            <div class="pharma-name">${esc(p.name)}</div>
+            <div class="pharma-addr">${esc(p.address||'')}</div>
+            <div class="pharma-meta">
+              <span class="badge badge-ok">De garde</span>
+              ${p.distance_km ? `<span style="font-size:10px;color:var(--txt2)">${p.distance_km < 1 ? (p.distance_km*1000).toFixed(0)+' m' : p.distance_km+' km'}</span>` : ''}
+            </div>
+          </div>
+          <div class="pharma-actions">
+            ${p.phone ? `<button class="btn-icon" onclick="callTel('${p.phone}')" title="Appeler"><i class="ti ti-phone"></i></button>` : ''}
+            ${p.lat   ? `<button class="btn-icon" onclick="openMap(${p.lat},${p.lon})" title="Carte"><i class="ti ti-map-pin"></i></button>` : ''}
+          </div>
+        </div>`).join('')}
+    </div>`;
+};
+
+/* ── OVERRIDE: DOCTORS from DB when online ──────────────────── */
+const _localRenderDocs = renderDocs;
+renderDocs = async function() {
+  if (!API.online) { _localRenderDocs(); return; }
+  const specialty = document.getElementById('specFilter').value;
+  const data = await API.getDoctors(specialty || null);
+  if (!data) { _localRenderDocs(); return; }
+
+  const treating = data.find(d => d.is_treating);
+  document.getElementById('myDoctorCard').innerHTML = treating
+    ? renderDocCard({...treating, dispo: treating.availability, specLabel: treating.specialty_label, horaires: treating.hours, distance: treating.distance_km+'km', avatar: treating.avatar, tel: treating.phone, addr: treating.address})
+    : '<div style="font-size:12px;color:var(--txt2)">Aucun médecin traitant enregistré.</div>';
+
+  const others = data.filter(d => !d.is_treating);
+  document.getElementById('docsList').innerHTML = others.map(d =>
+    renderDocCard({...d, dispo: d.availability, specLabel: d.specialty_label, horaires: d.hours, distance: d.distance_km+'km', avatar: d.avatar, tel: d.phone, addr: d.address})
+  ).join('');
+};
+
+/* ── OVERRIDE: AI CHAT using Groq via server ────────────────── */
+const _origSendChat = sendChat;
+sendChat = async function() {
+  const input = document.getElementById('chatInput');
+  const text  = input.value.trim();
+  if (!text) return;
+
+  // Build history from existing messages
+  const msgs = [...document.querySelectorAll('#chatMessages .msg-user, #chatMessages .msg-bot')];
+  const history = msgs.slice(-8).map(m => ({
+    role: m.classList.contains('msg-user') ? 'user' : 'assistant',
+    content: m.textContent.trim()
+  }));
+
+  appendRaw(esc(text), 'msg-user');
+  input.value = '';
+  const thinking = appendRaw('<span class="thinking-dots"><span></span><span></span><span></span></span>', 'msg-bot');
+
+  await new Promise(r => setTimeout(r, 400));
+  thinking.remove();
+
+  // Online mode → Groq via server
+  if (chatOnline && API.online && API.loggedIn) {
+    const last = getLastVitals();
+    const lastVitalsFlat = Object.fromEntries(
+      Object.entries(last).map(([k,v]) => [k, v.val])
+    );
+    const result = await API.chatAI(text, history, profile.path, lastVitalsFlat);
+    if (result) {
+      const d = appendRaw(markdownLite(result.reply), 'msg-bot');
+      const tag = document.createElement('div');
+      tag.className = 'source-tag src-online';
+      tag.innerHTML = `<i class="ti ti-brain" style="font-size:10px"></i> Llama3 via Groq`;
+      d.appendChild(tag);
+      return;
+    }
+  }
+
+  // Fallback → offline JS engine
+  if (chatOnline && (!API.online || !API.loggedIn)) {
+    appendRaw("Serveur non disponible — passage en mode hors-ligne.", 'msg-system');
+  }
+  repondreOffline(text);
+};
+
+/* ── INIT: ping server on load ──────────────────────────────── */
+(async function initOnline() {
+  const online = await API.ping();
+  const statusEl = document.getElementById('serverStatus');
+
+  if (online) {
+    if (statusEl) statusEl.innerHTML = `<span style="color:var(--teal)">● Serveur en ligne</span> — ${(window.LAAFI_CONFIG && window.LAAFI_CONFIG.API_HEALTH_URL) || ''}`;
+  } else {
+    if (statusEl) statusEl.innerHTML = `<span style="color:var(--txt3)">● Serveur hors-ligne</span> — mode local`;
+  }
+
+  // Session déjà active (retour dans l'app) → on saute directement le splash/choix/auth
+  if (API.loggedIn) {
+    enterMainApp();
+  }
+
+  updateStatusBadge();
+})();
+</script>
+<script src="js/db.js"></script>
+<script src="js/offline-search.js"></script>
+<script src="js/notifications.js"></script>
+<script src="js/app-overrides.js"></script>
+</body>
+</html>

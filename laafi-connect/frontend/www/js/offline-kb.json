@@ -1,0 +1,52 @@
+[
+  {
+    "id": "tension",
+    "keywords": ["tension", "ta", "pression", "systolique", "diastolique", "hypertension", "tensiometre"],
+    "response": "Votre tension artérielle est mesurée en deux valeurs :\n\n• **Systolique** (1er chiffre) : pression lors du battement — normale < 130 mmHg\n• **Diastolique** (2e chiffre) : pression au repos — normale < 85 mmHg\n\nUne tension > 140/90 nécessite un contact avec votre médecin traitant."
+  },
+  {
+    "id": "glycemie",
+    "keywords": ["glycemie", "sucre", "diabete", "hypoglycemie", "hyperglycemie", "insuline", "glucose"],
+    "response": "La glycémie normale à jeun est entre 0.7 et 1.1 g/L.\n\n• < 0.7 g/L : hypoglycémie — sucre rapide immédiatement\n• 1.1–1.26 g/L : pré-diabète — surveillance renforcée\n• > 1.26 g/L à jeun : diabète — suivi médical\n\nEn cas de malaise, ne restez pas seul."
+  },
+  {
+    "id": "spo2",
+    "keywords": ["spo2", "saturation", "oxygene", "respiration", "essoufflement", "asthme", "souffle"],
+    "response": "La SpO2 normale est entre 95% et 100%.\n\n• 94–95% : surveillance rapprochée — limitez l'effort\n• < 94% : consultez rapidement ou appelez le 112\n• < 90% : urgence médicale"
+  },
+  {
+    "id": "medicament_oubli",
+    "keywords": ["medicament", "traitement", "pilule", "comprimes", "oublie", "dose"],
+    "response": "Pour vos médicaments :\n\n• **Oubli < 12h** : prenez la dose oubliée dès que possible\n• **Oubli > 12h** : sautez la dose et reprenez normalement le lendemain\n• Ne doublez jamais une dose"
+  },
+  {
+    "id": "poids",
+    "keywords": ["poids", "obesite", "imc", "maigrir", "regime", "grossir"],
+    "response": "Le suivi du poids est important dans plusieurs pathologies :\n\n• Prise de > 2 kg en 48h → signe possible de rétention d'eau (insuffisance cardiaque)\n• Variations brutales → à signaler à votre médecin\n\nPesez-vous le matin à jeun, dans les mêmes conditions."
+  },
+  {
+    "id": "pouls",
+    "keywords": ["pouls", "coeur", "cardiaque", "palpitations", "rythme", "battements"],
+    "response": "Le pouls normal au repos est entre 60 et 100 battements/minute.\n\n• > 100 bpm au repos : tachycardie — reposez-vous et surveillez\n• < 50 bpm avec malaise : consultez rapidement\n\nMesurez-le toujours au repos, assis depuis quelques minutes."
+  },
+  {
+    "id": "temperature",
+    "keywords": ["temperature", "fievre", "fievreux", "chaud", "frisson"],
+    "response": "La température normale se situe entre 36.1°C et 37.2°C.\n\n• 37.3–38°C : fébricule — surveillez, hydratez-vous\n• > 38.5°C : fièvre — consultez si elle persiste plus de 48h\n• > 39.5°C ou avec confusion : urgence médicale"
+  },
+  {
+    "id": "urgence",
+    "keywords": ["urgence", "112", "sapeur", "ambulance", "grave", "malaise"],
+    "response": "En cas d'urgence vitale (perte de connaissance, douleur thoracique intense, difficulté respiratoire sévère), appelez immédiatement le **112** (SAMU) et restez avec la personne."
+  },
+  {
+    "id": "rendezvous",
+    "keywords": ["rendez-vous", "rdv", "medecin", "consultation", "docteur"],
+    "response": "Vous pouvez consulter la liste de vos médecins et leurs disponibilités dans l'onglet **Médecins**. Contactez directement votre médecin traitant pour prendre rendez-vous."
+  },
+  {
+    "id": "pharmacie_garde",
+    "keywords": ["pharmacie", "garde", "medicament acheter", "officine"],
+    "response": "Les pharmacies de garde sont disponibles dans l'onglet **Pharmacies**, avec leur adresse et numéro de téléphone. Cette liste est mise à jour dès que vous êtes en ligne."
+  }
+]

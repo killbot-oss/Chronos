@@ -1,0 +1,10 @@
+{
+  "name": "Laafi-Connect",
+  "short_name": "Laafi-Connect",
+  "start_url": "/index.html",
+  "display": "standalone",
+  "background_color": "#080C10",
+  "theme_color": "#3E7C5A",
+  "description": "Suivi santé et accès aux soins — Burkina Faso",
+  "icons": []
+}
