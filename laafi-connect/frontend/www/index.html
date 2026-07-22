@@ -1728,6 +1728,9 @@ function renderDiseaseList(){
 function logoutAccount(){
   if(!confirm('Voulez-vous vraiment vous déconnecter ?'))return;
   API.logout();
+  // Reset local profile so the next user doesn't see stale data
+  profile = {...DEFAULT_PROFILE};
+  LS.set('profile', profile);
   document.getElementById('mainAppScreen').style.display='none';
   resetAuthViews();
   showScreen('screen-choice');
@@ -2265,26 +2268,40 @@ async function onLoginSuccess() {
   showToast('Connecté ✓ — synchronisation en cours…', 'ok');
   updateStatusBadge();
 
-  // Sync local vitals → server
+  // 1. Fetch profile from server first so we always show the correct user's data
+  try {
+    const serverProfile = await API.getProfile();
+    if (serverProfile && serverProfile.full_name) {
+      profile.name      = serverProfile.full_name;
+      profile.avatar    = serverProfile.avatar || serverProfile.full_name.charAt(0).toUpperCase();
+      profile.path      = serverProfile.pathology  || profile.path;
+      profile.blood     = serverProfile.blood_group || profile.blood;
+      profile.allergies = serverProfile.allergies   || profile.allergies;
+      profile.dob       = serverProfile.dob         || profile.dob;
+      LS.set('profile', profile);
+    } else if (profile.name && profile.name !== 'Mon Profil') {
+      // New account: push local profile up to server (use full_name to match DB column)
+      await API.saveProfile({
+        full_name: profile.name,
+        pathology: profile.path,
+        blood_group: profile.blood,
+        allergies: profile.allergies,
+        dob: profile.dob,
+        avatar: profile.avatar,
+      });
+    }
+  } catch(e) {
+    // Server unreachable — keep local profile as-is
+  }
+
+  updateTopbar();
+
+  // 2. Sync local vitals → server (after profile is settled)
   const localVitals = LS.get('vitals') || [];
   if (localVitals.length) {
     const result = await API.syncVitals(localVitals);
     if (result) showToast(`${result.synced} mesure(s) synchronisée(s)`, 'ok');
   }
-
-  // Sync profile → server
-  if (profile.name && profile.name !== 'Mon Profil') {
-    await API.saveProfile({
-      name: profile.name,
-      pathology: profile.path,
-      blood_group: profile.blood,
-      allergies: profile.allergies,
-      dob: profile.dob,
-      avatar: profile.avatar,
-    });
-  }
-
-  updateTopbar();
 }
 
 /* ── OVERRIDE: PHARMACIES from DB when online ───────────────── */

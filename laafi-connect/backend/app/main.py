@@ -31,14 +31,6 @@ async def health():
     return {"status": "ok"}
 
 
-@app.get("/debug-cors")
-async def debug_cors():
-    return {
-        "raw_env": settings.ALLOWED_ORIGINS,
-        "parsed_list": settings.allowed_origins_list,
-    }
-
-
 @app.get("/")
 async def root():
     return {"service": "Laafi-Connect API", "docs": "/docs"}

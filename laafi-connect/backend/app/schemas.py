@@ -28,7 +28,7 @@ class AuthOut(BaseModel):
 
 
 class ProfileIn(BaseModel):
-    name: Optional[str] = None
+    full_name: Optional[str] = None
     pathology: Optional[str] = None
     stade: Optional[str] = None
     blood_group: Optional[str] = None
