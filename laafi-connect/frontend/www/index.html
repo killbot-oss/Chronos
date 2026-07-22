@@ -1981,6 +1981,14 @@ const API = (() => {
     if (_token) headers['Authorization'] = `Bearer ${_token}`;
     try {
       const res = await fetch(`${BASE}${path}`, {...opts, headers});
+      // 440 = session révoquée côté Supabase (projet pausé ou session invalidée)
+      // On force un logout propre sans tenter de refresh (le refresh token est aussi mort)
+      if (res.status === 440) {
+        _clearSession();
+        showToast('Session expirée — veuillez vous reconnecter', 'warn');
+        setTimeout(() => { document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active')); showScreen('screen-auth'); }, 1200);
+        return null;
+      }
       if (res.status === 401 && retry && _refresh) {
         if (await _refreshAccess()) return _fetch(path, opts, false);
         _clearSession(); return null;
