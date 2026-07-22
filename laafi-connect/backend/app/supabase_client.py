@@ -52,7 +52,19 @@ async def sign_in(email: str, password: str) -> dict:
     async with httpx.AsyncClient(timeout=15) as client:
         res = await client.post(url, headers=_auth_headers(), json={"email": email, "password": password})
     if res.status_code >= 400:
-        raise SupabaseAuthError(res.json().get("error_description") or "Identifiants invalides", 401)
+        body = {}
+        try:
+            body = res.json()
+        except Exception:
+            pass
+        code = body.get("error_code") or body.get("code") or ""
+        msg = body.get("error_description") or body.get("msg") or body.get("error") or ""
+        if "confirm" in (code + msg).lower():
+            raise SupabaseAuthError(
+                "Email non confirmé. Vérifiez votre boîte mail (et vos spams) pour le lien de confirmation.",
+                401,
+            )
+        raise SupabaseAuthError(msg or "Identifiants invalides", 401)
     return res.json()
 
 
@@ -79,6 +91,18 @@ async def get_user(access_token: str) -> dict:
     if res.status_code >= 400:
         raise HTTPException(status_code=401, detail="Session invalide")
     return res.json()
+
+
+async def ensure_profile(access_token: str, user_id: str, full_name: str | None) -> None:
+    """Create the profile row for this user if it doesn't already exist.
+    Called after both register and login so a confirmed-later signup (or a
+    row lost to an earlier silent failure) still ends up with a profile."""
+    await rest(
+        "POST", "profiles",
+        access_token=access_token,
+        json={"id": user_id, "full_name": full_name},
+        prefer="resolution=merge-duplicates,return=minimal",
+    )
 
 
 async def rest(
