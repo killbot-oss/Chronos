@@ -2033,6 +2033,10 @@ const API = (() => {
 
     async register(email, password, fullName) {
       const res = await _fetch('/auth/register', {method:'POST', body: JSON.stringify({email, password, full_name: fullName})});
+      if (res?.status === 202) {
+        const e = await res.json().catch(()=>{});
+        throw new Error(e?.detail || 'Vérifiez votre email pour confirmer votre inscription.');
+      }
       if (!res?.ok) { const e = await res?.json().catch(()=>{}); throw new Error(e?.detail || 'Erreur inscription'); }
       const d = await res.json(); _saveSession(d); return d;
     },
