@@ -22,6 +22,8 @@ def _auth_headers(extra: dict | None = None) -> dict:
 
 
 def _service_headers() -> dict:
+    # Service role key bypasses RLS - used for server-side trusted operations
+    # (e.g. reading public pharmacies/doctors tables, admin writes).
     return {
         "apikey": settings.SUPABASE_SERVICE_ROLE_KEY,
         "Authorization": f"Bearer {settings.SUPABASE_SERVICE_ROLE_KEY}",
@@ -87,13 +89,23 @@ async def get_user(access_token: str) -> dict:
     async with httpx.AsyncClient(timeout=10) as client:
         res = await client.get(url, headers=_auth_headers({"Authorization": f"Bearer {access_token}"}))
     if res.status_code >= 400:
-        # ⚠ DEBUG TEMPORAIRE — à retirer après diagnostic
-        raise HTTPException(status_code=401, detail=f"Session invalide [{res.status_code}]: {res.text}")
+        body = {}
+        try:
+            body = res.json()
+        except Exception:
+            pass
+        # session_not_found = Supabase paused/restarted or session manually revoked.
+        # Return 440 so the frontend can force a clean logout instead of retry-looping.
+        if body.get("error_code") == "session_not_found":
+            raise HTTPException(status_code=440, detail="session_not_found")
+        raise HTTPException(status_code=401, detail="Session invalide")
     return res.json()
 
 
 async def ensure_profile(access_token: str, user_id: str, full_name: str | None) -> None:
-    """Create the profile row for this user if it doesn't already exist."""
+    """Create the profile row for this user if it doesn't already exist.
+    Called after both register and login so a confirmed-later signup (or a
+    row lost to an earlier silent failure) still ends up with a profile."""
     await rest(
         "POST", "profiles",
         access_token=access_token,
@@ -112,7 +124,9 @@ async def rest(
     use_service_role: bool = False,
     prefer: str | None = None,
 ) -> httpx.Response:
-    """Generic PostgREST call."""
+    """Generic PostgREST call. Pass the user's access_token to run as that
+    user (subject to RLS), or use_service_role=True for trusted server reads
+    (e.g. public reference data like pharmacies/doctors)."""
     url = f"{settings.SUPABASE_URL}/rest/v1/{table}"
     if use_service_role:
         headers = _service_headers()
