@@ -2067,6 +2067,8 @@ const API = (() => {
 
     syncVitals: (vitals) => _json('/vitals/sync', {method:'POST', body: JSON.stringify({vitals})}),
 
+    getVitals: () => _json('/vitals'),
+
     getPharmacies: (lat, lon) => {
       const q = lat ? `?on_duty=true&lat=${lat}&lon=${lon}` : '?on_duty=true';
       return _json(`/pharmacies${q}`);
@@ -2333,7 +2335,31 @@ async function onLoginSuccess() {
   updateTopbar();
   loadProfileForm(); // met à jour le formulaire Carnet avec les données serveur
 
-  // 2. Sync constantes locales → serveur
+  // 2. Télécharge les vitals du serveur et fusionne avec le local
+  try {
+    const serverVitals = await API.getVitals();
+    if (serverVitals && serverVitals.length) {
+      // Convertit le format serveur {type, value:{...}, recorded_at}
+      // vers le format local {type, values:{...}, date, time, note}
+      const mapped = serverVitals.map(v => {
+        const dt = new Date(v.recorded_at);
+        const date = dt.toISOString().slice(0,10);
+        const time = dt.toTimeString().slice(0,5);
+        return { type: v.type, values: v.value, date, time, note: '', local_id: v.local_id || v.id };
+      });
+      // Fusionne : on garde les locaux + ceux du serveur qui ne sont pas déjà là
+      const localVitals = LS.get('vitals') || [];
+      const localIds = new Set(localVitals.map(v => v.local_id).filter(Boolean));
+      const toAdd = mapped.filter(v => !localIds.has(v.local_id));
+      vitals = [...localVitals, ...toAdd];
+      // Trie par date décroissante
+      vitals.sort((a,b) => (b.date+b.time).localeCompare(a.date+a.time));
+      LS.set('vitals', vitals);
+      renderVitalGrid(); renderHistory(); renderTrend(); renderAlerts();
+    }
+  } catch(e) { /* offline */ }
+
+  // 3. Sync constantes locales → serveur
   const localVitals = LS.get('vitals') || [];
   if (localVitals.length) {
     const result = await API.syncVitals(localVitals);
